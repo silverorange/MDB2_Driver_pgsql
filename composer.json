@@ -1,0 +1,26 @@
+{
+	"name": "silverorange/mdb2_driver_pgsql",
+	"description": "This is the PostgreSQL MDB2 driver.",
+	"type": "library",
+	"keywords": [ "database", "orm", "postgresql", "postgres" ],
+	"homepage": "https://github.com/silverorange/MDB2_Driver_pgsql",
+	"license": "BSD-2-Clause",
+	"authors": [
+		{
+			"name": "Michael Gauthier",
+			"email": "mike@silverorange.com"
+		}
+	],
+	"require": {
+		"php": ">=5.2.0",
+		"ext-pgsql": "*",
+		"pear/pear-core-minimal": "^1.9.0",
+		"silverorange/mdb2": "^2.4.1"
+	},
+	"autoload": {
+		"classmap": [ "MDB2/" ]
+	},
+	"include-path": [
+		"./"
+	]
+}

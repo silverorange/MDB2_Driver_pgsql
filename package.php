@@ -3,127 +3,57 @@
 require_once 'PEAR/PackageFileManager2.php';
 PEAR::setErrorHandling(PEAR_ERROR_DIE);
 
-$version_release = 'XXX';
-$version_api = $version_release;
+$version = '1.4.2so2';
 $state = 'stable';
 $notes = <<<EOT
-- fixed bug #10407: propagate errors in MDB2_Statement_Common::execute()
-- fixed bug #10452: error in getDeclaration() with custom datatype_map and no
-  datatype_map_callback function
-- fixed bug #10521: quote($val,'decimal') and quote($val,'float') pass unsafe characters
 - return length as "precision,scale" for NUMERIC and DECIMAL fields in mapNativeDatatype()
-- fixed bug #10537: safer check for valid MDB2 connection in singleton() [fornax]
-- fixed bug #10598: MDB2::singleton() not working in some rare conditions [fornax]
+- more accurate field size information in getTableFieldDefinition() in the
+  Reverse module
 - in getTableIndexDefinition() and getTableConstraintDefinition() in the Reverse
   module, also return the field position in the index/constraint
-- exec() now returns a reference instead of a copy to prevent memory leaks
-- request #10787: MDB2_Driver_Common::$phptype and $dbsyntax properties are now public
+- Request #9106: more accurate sequence name retrieval routine in getSequenceName()
+- fixed bug #10895: setLimit() does not work properly when a subquery uses LIMIT
 
 open todo items:
-- handle autoincrement fields in alterTable()
-- add length handling to LOB reverse engineering
-- add EXPLAIN abstraction
-- add cursor support along the lines of PDO (Request #3660 etc.)
-- add PDO based drivers, especially a driver to support SQLite 3 (Request #6907)
-- add support to export/import in CSV format
-- add more functions to the Function module (MD5(), IFNULL(), LENGTH() etc.)
-- add support for database/table/row LOCKs
-- add support for FOREIGN KEYs and CHECK (ENUM as possible mysql fallback) constraints
-- generate STATUS file from test suite results and allow users to submit test results
-- add support for full text index creation and querying
-- add tests to check if the RDBMS specific handling with portability options
-  disabled behaves as expected
-- handle implicit commits (like for DDL) in any affected driver (mysql, sqlite..)
-- add a getTableFieldsDefinitions() method to be used in tableInfo()
-- drop ILIKE from matchPattern() and instead add a second parameter to
-  handle case sensitivity with arbitrary operators
-- add charset and collation support to field declaration in all drivers
-- handle LOBs in buffered result sets (Request #8793)
+- enable pg_execute() once issues with bytea column are resolved
+- use pg_result_error_field() to handle localized error messages (Request #7059)
+- add option to use unnamed prepared statements
+  (see http://www.postgresql.org/docs/current/static/protocol-flow.html "Extended Query")
 EOT;
 
-$description =<<<EOT
-PEAR MDB2 is a merge of the PEAR DB and Metabase php database abstraction layers.
-
-It provides a common API for all supported RDBMS. The main difference to most
-other DB abstraction packages is that MDB2 goes much further to ensure
-portability. MDB2 provides most of its many features optionally that
-can be used to construct portable SQL statements:
-* Object-Oriented API
-* A DSN (data source name) or array format for specifying database servers
-* Datatype abstraction and on demand datatype conversion
-* Various optional fetch modes to fix portability issues
-* Portable error codes
-* Sequential and non sequential row fetching as well as bulk fetching
-* Ability to make buffered and unbuffered queries
-* Ordered array and associative array for the fetched rows
-* Prepare/execute (bind) named and unnamed placeholder emulation
-* Sequence/autoincrement emulation
-* Replace emulation
-* Limited sub select emulation
-* Row limit emulation
-* Transactions/savepoint support
-* Large Object support
-* Index/Unique Key/Primary Key support
-* Pattern matching abstraction
-* Module framework to load advanced functionality on demand
-* Ability to read the information schema
-* RDBMS management methods (creating, dropping, altering)
-* Reverse engineering schemas from an existing database
-* SQL function call abstraction
-* Full integration into the PEAR Framework
-* PHPDoc API documentation
-EOT;
-
+$description = 'This is the PostgreSQL MDB2 driver.';
 $packagefile = './package.xml';
 
 $options = array(
-    'filelistgenerator' => 'cvs',
+    'filelistgenerator' => 'file',
     'changelogoldtonew' => false,
     'simpleoutput'      => true,
     'baseinstalldir'    => '/',
     'packagedirectory'  => './',
     'packagefile'       => $packagefile,
     'clearcontents'     => false,
-    'ignore'            => array('package*.php', 'package*.xml', 'sqlite*', 'mssql*', 'oci8*', 'pgsql*', 'mysqli*', 'mysql*', 'fbsql*', 'querysim*', 'ibase*', 'peardb*'),
-    'dir_roles'         => array(
-        'docs'      => 'doc',
-         'examples' => 'doc',
-         'tests'    => 'test',
+    'ignore'            => array(
+        'package.php',
+        'composer.json',
+    ),
+    'exceptions' => array(
+        'LICENSE' => 'doc',
     ),
 );
 
 $package = &PEAR_PackageFileManager2::importOptions($packagefile, $options);
 $package->setPackageType('php');
-$package->setExtends('MDB');
 
 $package->clearDeps();
-$package->setPhpDep('4.3.2');
+$package->setPhpDep('4.3.0');
 $package->setPearInstallerDep('1.4.0b1');
-$package->addPackageDepWithChannel('required', 'PEAR', 'pear.php.net', '1.3.6');
-
-$package->addDependencyGroup('fbsql', 'Frontbase SQL driver for MDB2');
-$package->addGroupPackageDepWithChannel('subpackage', 'fbsql', 'MDB2_Driver_fbsql', 'pear.php.net', '0.3.0');
-$package->addDependencyGroup('ibase', 'Interbase/Firebird driver for MDB2');
-$package->addGroupPackageDepWithChannel('subpackage', 'ibase', 'MDB2_Driver_ibase', 'pear.php.net', 'XXX');
-$package->addDependencyGroup('mysql', 'MySQL driver for MDB2');
-$package->addGroupPackageDepWithChannel('subpackage', 'mysql', 'MDB2_Driver_mysql', 'pear.php.net', 'XXX');
-$package->addDependencyGroup('mysqli', 'MySQLi driver for MDB2');
-$package->addGroupPackageDepWithChannel('subpackage', 'mysqli', 'MDB2_Driver_mysqli', 'pear.php.net', 'XXX');
-$package->addDependencyGroup('mssql', 'MS SQL Server driver for MDB2');
-$package->addGroupPackageDepWithChannel('subpackage', 'mssql', 'MDB2_Driver_mssql', 'pear.php.net', 'XXX');
-$package->addDependencyGroup('oci8', 'Oracle driver for MDB2');
-$package->addGroupPackageDepWithChannel('subpackage', 'oci8', 'MDB2_Driver_oci8', 'pear.php.net', 'XXX');
-$package->addDependencyGroup('pgsql', 'PostgreSQL driver for MDB2');
-$package->addGroupPackageDepWithChannel('subpackage', 'pgsql', 'MDB2_Driver_pgsql', 'pear.php.net', 'XXX');
-$package->addDependencyGroup('querysim', 'Querysim driver for MDB2');
-$package->addGroupPackageDepWithChannel('subpackage', 'querysim', 'MDB2_Driver_querysim', 'pear.php.net', '0.6.0');
-$package->addDependencyGroup('sqlite', 'SQLite2 driver for MDB2');
-$package->addGroupPackageDepWithChannel('subpackage', 'sqlite', 'MDB2_Driver_sqlite', 'pear.php.net', 'XXX');
+$package->addPackageDepWithChannel('required', 'MDB2', 'pear.php.net', '2.4.1');
+$package->addExtensionDep('required', 'pgsql');
 
 $package->addRelease();
 $package->generateContents();
-$package->setReleaseVersion($version_release);
-$package->setAPIVersion($version_api);
+$package->setReleaseVersion($version);
+$package->setAPIVersion($version);
 $package->setReleaseStability($state);
 $package->setAPIStability($state);
 $package->setNotes($notes);
