@@ -708,7 +708,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * @param resource $connection
      * @return mixed MDB2 Error Object or the number of rows affected
      */
-    private function _affectedRows($connection, $result = null)
+    protected function _affectedRows($connection, $result = null)
     {
         if (null === $connection) {
             $connection = $this->getConnection();
@@ -1225,7 +1225,7 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
      *                  Some DBMS may not return any columns when the result set
      *                  does not contain any rows.
      */
-    private function _getColumnNames()
+    protected function _getColumnNames()
     {
         $columns = array();
         $numcols = $this->numCols();
@@ -1412,7 +1412,7 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
      * @return mixed MDB2_Result or integer (affected rows) on success,
      *               a MDB2 error on failure
      */
-    private function _execute($result_class = true, $result_wrap_class = true)
+    protected function _execute($result_class = true, $result_wrap_class = true)
     {
         if (null === $this->statement) {
             return parent::_execute($result_class, $result_wrap_class);
