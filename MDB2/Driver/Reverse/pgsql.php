@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------+
-// | PHP versions 4 and 5                                                 |
+// | PHP version 5                                                        |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1998-2008 Manuel Lemos, Tomas V.V.Cox,                 |
 // | Stig. S. Bakken, Lukas Smith                                         |
@@ -65,9 +65,8 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
      * @param string $table_name name of table that should be used in method
      * @param string $field_name name of field that should be used in method
      * @return mixed data array on success, a MDB2 error on failure
-     * @access public
      */
-    function getTableFieldDefinition($table_name, $field_name)
+    public function getTableFieldDefinition($table_name, $field_name)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -195,15 +194,14 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
      * @param string $table_name name of table that should be used in method
      * @param string $index_name name of index that should be used in method
      * @return mixed data array on success, a MDB2 error on failure
-     * @access public
      */
-    function getTableIndexDefinition($table_name, $index_name)
+    public function getTableIndexDefinition($table_name, $index_name)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
             return $db;
         }
-        
+
         list($schema, $table) = $this->splitTableSchema($table_name);
 
         $query = 'SELECT relname, indkey FROM pg_index, pg_class';
@@ -253,15 +251,14 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
      * @param string $table_name      name of table that should be used in method
      * @param string $constraint_name name of constraint that should be used in method
      * @return mixed data array on success, a MDB2 error on failure
-     * @access public
      */
-    function getTableConstraintDefinition($table_name, $constraint_name)
+    public function getTableConstraintDefinition($table_name, $constraint_name)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
             return $db;
         }
-        
+
         list($schema, $table) = $this->splitTableSchema($table_name);
 
         $query = "SELECT c.oid,
@@ -438,11 +435,10 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
      *
      * @param string $trigger name of trigger that should be used in method
      * @return mixed data array on success, a MDB2 error on failure
-     * @access public
      *
      * @TODO: add support for plsql functions and functions with args
      */
-    function getTriggerDefinition($trigger)
+    public function getTriggerDefinition($trigger)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -512,7 +508,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
      *
      * @see MDB2_Driver_Common::tableInfo()
      */
-    function tableInfo($result, $mode = null)
+    public function tableInfo($result, $mode = null)
     {
         if (is_string($result)) {
            return parent::tableInfo($result, $mode);
@@ -570,5 +566,8 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
 
         return $res;
     }
+
+    // }}}
 }
+
 ?>

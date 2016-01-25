@@ -1,7 +1,7 @@
 <?php
 // vim: set et ts=4 sw=4 fdm=marker:
 // +----------------------------------------------------------------------+
-// | PHP versions 4 and 5                                                 |
+// | PHP version 5                                                        |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1998-2008 Manuel Lemos, Tomas V.V.Cox,                 |
 // | Stig. S. Bakken, Lukas Smith                                         |
@@ -48,23 +48,25 @@
 /**
  * MDB2 PostGreSQL driver
  *
- * @package MDB2
+ * @package  MDB2
  * @category Database
- * @author  Paul Cooper <pgc@ucecom.com>
+ * @author   Paul Cooper <pgc@ucecom.com>
  */
 class MDB2_Driver_pgsql extends MDB2_Driver_Common
 {
     // {{{ properties
-    var $string_quoting = array('start' => "'", 'end' => "'", 'escape' => "'", 'escape_pattern' => '\\');
 
-    var $identifier_quoting = array('start' => '"', 'end' => '"', 'escape' => '"');
+    public $string_quoting = array('start' => "'", 'end' => "'", 'escape' => "'", 'escape_pattern' => '\\');
+
+    public $identifier_quoting = array('start' => '"', 'end' => '"', 'escape' => '"');
+
     // }}}
     // {{{ constructor
 
     /**
      * Constructor
      */
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -107,9 +109,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *
      * @param integer $error
      * @return array
-     * @access public
      */
-    function errorInfo($error = null)
+    public function errorInfo($error = null)
     {
         // Fall back to MDB2_ERROR if there was no mapping.
         $error_code = MDB2_ERROR;
@@ -202,10 +203,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * @param   bool    escape wildcards
      *
      * @return  string  quoted string
-     *
-     * @access  public
      */
-    function escape($text, $escape_wildcards = false)
+    public function escape($text, $escape_wildcards = false)
     {
         if ($escape_wildcards) {
             $text = $this->escapePattern($text);
@@ -230,10 +229,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *
      * @param   string  name of a savepoint to set
      * @return  mixed   MDB2_OK on success, a MDB2 error on failure
-     *
-     * @access  public
      */
-    function beginTransaction($savepoint = null)
+    public function beginTransaction($savepoint = null)
     {
         $this->debug('Starting transaction/savepoint', __FUNCTION__, array('is_manip' => true, 'savepoint' => $savepoint));
         if (null !== $savepoint) {
@@ -270,10 +267,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *
      * @param   string  name of a savepoint to release
      * @return  mixed   MDB2_OK on success, a MDB2 error on failure
-     *
-     * @access  public
      */
-    function commit($savepoint = null)
+    public function commit($savepoint = null)
     {
         $this->debug('Committing transaction/savepoint', __FUNCTION__, array('is_manip' => true, 'savepoint' => $savepoint));
         if (!$this->in_transaction) {
@@ -304,10 +299,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *
      * @param   string  name of a savepoint to rollback to
      * @return  mixed   MDB2_OK on success, a MDB2 error on failure
-     *
-     * @access  public
      */
-    function rollback($savepoint = null)
+    public function rollback($savepoint = null)
     {
         $this->debug('Rolling back transaction/savepoint', __FUNCTION__, array('is_manip' => true, 'savepoint' => $savepoint));
         if (!$this->in_transaction) {
@@ -345,10 +338,9 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *
      * @return  mixed   MDB2_OK on success, a MDB2 error on failure
      *
-     * @access  public
      * @since   2.1.1
      */
-    function setTransactionIsolation($isolation, $options = array())
+    public function setTransactionIsolation($isolation, $options = array())
     {
         $this->debug('Setting transaction isolation level', __FUNCTION__, array('is_manip' => true));
         switch ($isolation) {
@@ -373,9 +365,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * Do the grunt work of connecting to the database
      *
      * @return mixed connection resource on success, MDB2 Error Object on failure
-     * @access protected
      */
-    function _doConnect($username, $password, $database_name, $persistent = false)
+    protected function _doConnect($username, $password, $database_name, $persistent = false)
     {
         if (!extension_loaded($this->phptype)) {
             return $this->raiseError(MDB2_ERROR_NOT_FOUND, null, null,
@@ -490,9 +481,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * Connect to the database
      *
      * @return true on success, MDB2 Error Object on failure
-     * @access public
      */
-    function connect()
+    public function connect()
     {
         if (is_resource($this->connection)) {
             //if (count(array_diff($this->connected_dsn, $this->dsn)) == 0
@@ -535,7 +525,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *
      * @return true on success, MDB2 Error Object on failure
      */
-    function setCharset($charset, $connection = null)
+    public function setCharset($charset, $connection = null)
     {
         if (null === $connection) {
             $connection = $this->getConnection();
@@ -564,9 +554,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * @param string $name    name of the database that should be checked
      *
      * @return mixed true/false on success, a MDB2 error on failure
-     * @access public
      */
-    function databaseExists($name)
+    public function databaseExists($name)
     {
         $res = $this->_doConnect($this->dsn['username'],
                                  $this->dsn['password'],
@@ -589,9 +578,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *                        connection is opened persistently
      * @return mixed true on success, false if not connected and error
      *                object on error
-     * @access public
      */
-    function disconnect($force = true)
+    public function disconnect($force = true)
     {
         if (is_resource($this->connection)) {
             if ($this->in_transaction) {
@@ -631,9 +619,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *                        the result set
      * @param boolean $is_manip  if the query is a manipulation query
      * @return mixed MDB2_OK on success, a MDB2 error on failure
-     * @access public
      */
-    function standaloneQuery($query, $types = null, $is_manip = false)
+    public function standaloneQuery($query, $types = null, $is_manip = false)
     {
         $user = $this->options['DBA_username']? $this->options['DBA_username'] : $this->dsn['username'];
         $pass = $this->options['DBA_password']? $this->options['DBA_password'] : $this->dsn['password'];
@@ -670,9 +657,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * @param resource $connection
      * @param string $database_name
      * @return result or error object
-     * @access protected
      */
-    function _doQuery($query, $is_manip = false, $connection = null, $database_name = null)
+    protected function _doQuery($query, $is_manip = false, $connection = null, $database_name = null)
     {
         $this->last_query = $query;
         $result = $this->debug($query, 'query', array('is_manip' => $is_manip, 'when' => 'pre'));
@@ -721,9 +707,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * @param resource $result
      * @param resource $connection
      * @return mixed MDB2 Error Object or the number of rows affected
-     * @access private
      */
-    function _affectedRows($connection, $result = null)
+    private function _affectedRows($connection, $result = null)
     {
         if (null === $connection) {
             $connection = $this->getConnection();
@@ -745,9 +730,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * @param integer $limit  limit the number of rows
      * @param integer $offset  start reading from given offset
      * @return string modified query
-     * @access protected
      */
-    function _modifyQuery($query, $is_manip, $limit, $offset)
+    protected function _modifyQuery($query, $is_manip, $limit, $offset)
     {
         if ($limit > 0
             && !preg_match('/LIMIT\s*\d(?:\s*(?:,|OFFSET)\s*\d+)?(?:[^\)]*)?$/i', $query)
@@ -774,9 +758,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * @param string $query  query to modify
      * @param integer $limit  limit the number of rows
      * @return string modified query
-     * @access protected
      */
-    function _modifyManipQuery($query, $limit)
+    protected function _modifyManipQuery($query, $limit)
     {
         $pos = strpos(strtolower($query), 'where');
         $where = $pos ? substr($query, $pos) : '';
@@ -804,9 +787,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *
      * @param bool   $native  determines if the raw version string should be returned
      * @return mixed array/string with version information or MDB2 error object
-     * @access public
      */
-    function getServerVersion($native = false)
+    public function getServerVersion($native = false)
     {
         $query = 'SHOW SERVER_VERSION';
         if ($this->connected_server_info) {
@@ -866,10 +848,9 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * @param mixed   $lobs   key (field) value (parameter) pair for all lob placeholders
      * @return mixed resource handle for the prepared query on success, a MDB2
      *        error on failure
-     * @access public
      * @see bindParam, execute
      */
-    function prepare($query, $types = null, $result_types = null, $lobs = array())
+    public function prepare($query, $types = null, $result_types = null, $lobs = array())
     {
         if ($this->options['emulate_prepared']) {
             return parent::prepare($query, $types, $result_types, $lobs);
@@ -1020,10 +1001,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * @param   string  name of the sequence
      *
      * @return  string  formatted sequence name
-     *
-     * @access  public
      */
-    function getSequenceName($sqn)
+    public function getSequenceName($sqn)
     {
         if (false === $this->options['disable_smart_seqname']) {
             if (strpos($sqn, '_') !== false) {
@@ -1084,9 +1063,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *                          automatic created, if it
      *                          not exists
      * @return mixed MDB2 Error Object or id
-     * @access public
      */
-    function nextID($seq_name, $ondemand = true)
+    public function nextID($seq_name, $ondemand = true)
     {
         $sequence_name = $this->quoteIdentifier($this->getSequenceName($seq_name), true);
         $query = "SELECT NEXTVAL('$sequence_name')";
@@ -1119,9 +1097,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      * @param string $table name of the table into which a new row was inserted
      * @param string $field name of the field into which a new row was inserted
      * @return mixed MDB2 Error Object or id
-     * @access public
      */
-    function lastInsertID($table = null, $field = null)
+    public function lastInsertID($table = null, $field = null)
     {
         if (empty($table) && empty($field)) {
             return $this->queryOne('SELECT lastval()', 'integer');
@@ -1139,25 +1116,25 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      *
      * @param string $seq_name name of the sequence
      * @return mixed MDB2 Error Object or id
-     * @access public
      */
-    function currID($seq_name)
+    public function currID($seq_name)
     {
         $sequence_name = $this->quoteIdentifier($this->getSequenceName($seq_name), true);
         return $this->queryOne("SELECT last_value FROM $sequence_name", 'integer');
     }
+
+    // }}}
 }
 
 /**
  * MDB2 PostGreSQL result driver
  *
- * @package MDB2
+ * @package  MDB2
  * @category Database
- * @author  Paul Cooper <pgc@ucecom.com>
+ * @author   Paul Cooper <pgc@ucecom.com>
  */
 class MDB2_Result_pgsql extends MDB2_Result_Common
 {
-    // }}}
     // {{{ fetchRow()
 
     /**
@@ -1166,9 +1143,8 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
      * @param int       $fetchmode  how the array data should be indexed
      * @param int    $rownum    number of the row where the data can be found
      * @return int data array on success, a MDB2 error on failure
-     * @access public
      */
-    function fetchRow($fetchmode = MDB2_FETCHMODE_DEFAULT, $rownum = null)
+    public function fetchRow($fetchmode = MDB2_FETCHMODE_DEFAULT, $rownum = null)
     {
         if (null !== $rownum) {
             $seek = $this->seek($rownum);
@@ -1248,9 +1224,8 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
      *                  or an MDB2 error on failure.
      *                  Some DBMS may not return any columns when the result set
      *                  does not contain any rows.
-     * @access private
      */
-    function _getColumnNames()
+    private function _getColumnNames()
     {
         $columns = array();
         $numcols = $this->numCols();
@@ -1273,11 +1248,10 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
     /**
      * Count the number of columns returned by the DBMS in a query result.
      *
-     * @access public
      * @return mixed integer value with the number of columns, a MDB2 error
      *                       on failure
      */
-    function numCols()
+    public function numCols()
     {
         $cols = @pg_num_fields($this->result);
         if (null === $cols) {
@@ -1301,9 +1275,8 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
      * Move the internal result pointer to the next available result
      *
      * @return true on success, false if there is no more result set or an error object on failure
-     * @access public
      */
-    function nextResult()
+    public function nextResult()
     {
         $connection = $this->db->getConnection();
         if (MDB2::isError($connection)) {
@@ -1323,9 +1296,8 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
      * Free the internal resources associated with result.
      *
      * @return boolean true on success, false if result is invalid
-     * @access public
      */
-    function free()
+    public function free()
     {
         if (is_resource($this->result) && $this->db->connection) {
             $free = @pg_free_result($this->result);
@@ -1337,14 +1309,16 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
         $this->result = false;
         return MDB2_OK;
     }
+
+    // }}}
 }
 
 /**
  * MDB2 PostGreSQL buffered result driver
  *
- * @package MDB2
+ * @package  MDB2
  * @category Database
- * @author  Paul Cooper <pgc@ucecom.com>
+ * @author   Paul Cooper <pgc@ucecom.com>
  */
 class MDB2_BufferedResult_pgsql extends MDB2_Result_pgsql
 {
@@ -1355,9 +1329,8 @@ class MDB2_BufferedResult_pgsql extends MDB2_Result_pgsql
      *
      * @param int    $rownum    number of the row where the data can be found
      * @return mixed MDB2_OK on success, a MDB2 error on failure
-     * @access public
      */
-    function seek($rownum = 0)
+    public function seek($rownum = 0)
     {
         if ($this->rownum != ($rownum - 1) && !@pg_result_seek($this->result, $rownum)) {
             if (false === $this->result) {
@@ -1381,9 +1354,8 @@ class MDB2_BufferedResult_pgsql extends MDB2_Result_pgsql
      * Check if the end of the result set has been reached
      *
      * @return mixed true or false on sucess, a MDB2 error on failure
-     * @access public
      */
-    function valid()
+    public function valid()
     {
         $numrows = $this->numRows();
         if (MDB2::isError($numrows)) {
@@ -1399,9 +1371,8 @@ class MDB2_BufferedResult_pgsql extends MDB2_Result_pgsql
      * Returns the number of rows in a result object
      *
      * @return mixed MDB2 Error Object or the number of rows
-     * @access public
      */
-    function numRows()
+    public function numRows()
     {
         $rows = @pg_num_rows($this->result);
         if (null === $rows) {
@@ -1417,14 +1388,16 @@ class MDB2_BufferedResult_pgsql extends MDB2_Result_pgsql
         }
         return $rows;
     }
+
+    // }}}
 }
 
 /**
  * MDB2 PostGreSQL statement driver
  *
- * @package MDB2
+ * @package  MDB2
  * @category Database
- * @author  Paul Cooper <pgc@ucecom.com>
+ * @author   Paul Cooper <pgc@ucecom.com>
  */
 class MDB2_Statement_pgsql extends MDB2_Statement_Common
 {
@@ -1438,9 +1411,8 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
      *
      * @return mixed MDB2_Result or integer (affected rows) on success,
      *               a MDB2 error on failure
-     * @access private
      */
-    function _execute($result_class = true, $result_wrap_class = true)
+    private function _execute($result_class = true, $result_wrap_class = true)
     {
         if (null === $this->statement) {
             return parent::_execute($result_class, $result_wrap_class);
@@ -1533,9 +1505,8 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
      * Release resources allocated for the specified prepared query.
      *
      * @return mixed MDB2_OK on success, a MDB2 error on failure
-     * @access public
      */
-    function free()
+    public function free()
     {
         if (null === $this->positions) {
             return $this->db->raiseError(MDB2_ERROR, null, null,
@@ -1556,14 +1527,16 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
         return $result;
     }
 
+    // }}}
+    // {{{ dropTable()
+
     /**
      * drop an existing table
      *
      * @param string $name name of the table that should be dropped
      * @return mixed MDB2_OK on success, a MDB2 error on failure
-     * @access public
      */
-    function dropTable($name)
+    public function dropTable($name)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -1579,5 +1552,8 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
 
        return $result;
     }
+
+    // }}}
 }
+
 ?>

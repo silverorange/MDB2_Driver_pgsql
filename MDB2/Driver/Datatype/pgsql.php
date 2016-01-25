@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------+
-// | PHP versions 4 and 5                                                 |
+// | PHP version 5                                                        |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1998-2007 Manuel Lemos, Tomas V.V.Cox,                 |
 // | Stig. S. Bakken, Lukas Smith                                         |
@@ -49,9 +49,9 @@ require_once 'MDB2/Driver/Datatype/Common.php';
 /**
  * MDB2 PostGreSQL driver
  *
- * @package MDB2
+ * @package  MDB2
  * @category Database
- * @author  Paul Cooper <pgc@ucecom.com>
+ * @author   Paul Cooper <pgc@ucecom.com>
  */
 class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
 {
@@ -64,9 +64,8 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @param string  $type  specifies which type to convert to
      * @param boolean $rtrim [optional] when TRUE [default], apply rtrim() to text
      * @return object a MDB2 error on failure
-     * @access protected
      */
-    function _baseConvertResult($value, $type, $rtrim = true)
+    protected function _baseConvertResult($value, $type, $rtrim = true)
     {
         if (null === $value) {
             return null;
@@ -113,9 +112,8 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      *          to not be set to null.
      * @return string  DBMS specific SQL code portion that should be used to
      *      declare the specified field.
-     * @access public
      */
-    function getTypeDeclaration($field)
+    public function getTypeDeclaration($field)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -194,9 +192,8 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      *           to not be set to null.
      * @return string DBMS specific SQL code portion that should be used to
      *       declare the specified field.
-     * @access protected
      */
-    function _getIntegerDeclaration($name, $field)
+    protected function _getIntegerDeclaration($name, $field)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -238,9 +235,8 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @param bool $escape_wildcards if to escape escape wildcards
      * @return string text string that represents the given argument value in
      *      a DBMS specific format.
-     * @access protected
      */
-    function _quoteCLOB($value, $quote, $escape_wildcards)
+    protected function _quoteCLOB($value, $quote, $escape_wildcards)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -267,9 +263,8 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @param bool $escape_wildcards if to escape escape wildcards
      * @return string text string that represents the given argument value in
      *      a DBMS specific format.
-     * @access protected
      */
-    function _quoteBLOB($value, $quote, $escape_wildcards)
+    protected function _quoteBLOB($value, $quote, $escape_wildcards)
     {
         if (!$quote) {
             return $value;
@@ -308,9 +303,8 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @param bool $escape_wildcards if to escape escape wildcards
      * @return string text string that represents the given argument value in
      *       a DBMS specific format.
-     * @access protected
      */
-    function _quoteBoolean($value, $quote, $escape_wildcards)
+    protected function _quoteBoolean($value, $quote, $escape_wildcards)
     {
         $value = $value ? 't' : 'f';
         if (!$quote) {
@@ -325,8 +319,6 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
     /**
      * build a pattern matching string
      *
-     * @access public
-     *
      * @param array $pattern even keys are strings, odd are patterns (% and _)
      * @param string $operator optional pattern operator (LIKE, ILIKE and maybe others in the future)
      * @param string $field optional field name that is being matched against
@@ -334,7 +326,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      *
      * @return string SQL pattern
      */
-    function matchPattern($pattern, $operator = null, $field = null)
+    public function matchPattern($pattern, $operator = null, $field = null)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -384,12 +376,9 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
     /**
      * build string to define escape pattern string
      *
-     * @access public
-     *
-     *
      * @return string define escape pattern
      */
-    function patternEscapeString()
+    public function patternEscapeString()
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -406,9 +395,8 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      *
      * @param array  $field native field description
      * @return array containing the various possible types, length, sign, fixed
-     * @access public
      */
-    function _mapNativeDatatype($field)
+    protected function _mapNativeDatatype($field)
     {
         $db_type = strtolower($field['type']);
         $length = $field['length'];
@@ -540,9 +528,8 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      *
      * @param string $type
      * @return string
-     * @access public
      */
-    function mapPrepareDatatype($type)
+    public function mapPrepareDatatype($type)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -576,4 +563,5 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
     }
     // }}}
 }
+
 ?>

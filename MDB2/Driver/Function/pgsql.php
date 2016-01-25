@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------+
-// | PHP versions 4 and 5                                                 |
+// | PHP version 5                                                        |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1998-2008 Manuel Lemos, Tomas V.V.Cox,                 |
 // | Stig. S. Bakken, Lukas Smith                                         |
@@ -49,9 +49,9 @@ require_once 'MDB2/Driver/Function/Common.php';
 /**
  * MDB2 MySQL driver for the function modules
  *
- * @package MDB2
+ * @package  MDB2
  * @category Database
- * @author Lukas Smith <smith@pooteeweet.org>
+ * @author   Lukas Smith <smith@pooteeweet.org>
  */
 class MDB2_Driver_Function_pgsql extends MDB2_Driver_Function_Common
 {
@@ -67,9 +67,8 @@ class MDB2_Driver_Function_pgsql extends MDB2_Driver_Function_Common
      * @param mixed $result_class string which specifies which result class to use
      * @param mixed $result_wrap_class string which specifies which class to wrap results in
      * @return mixed a result handle or MDB2_OK on success, a MDB2 error on failure
-     * @access public
      */
-    function executeStoredProc($name, $params = null, $types = null, $result_class = true, $result_wrap_class = false)
+    public function executeStoredProc($name, $params = null, $types = null, $result_class = true, $result_wrap_class = false)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -89,9 +88,8 @@ class MDB2_Driver_Function_pgsql extends MDB2_Driver_Function_Common
      * @param string $expression
      *
      * @return string to call a variable with the timestamp
-     * @access public
      */
-    function unixtimestamp($expression)
+    public function unixtimestamp($expression)
     {
         return 'EXTRACT(EPOCH FROM DATE_TRUNC(\'seconds\', CAST ((' . $expression . ') AS TIMESTAMP)))';
     }
@@ -103,9 +101,8 @@ class MDB2_Driver_Function_pgsql extends MDB2_Driver_Function_Common
      * return string to call a function to get a substring inside an SQL statement
      *
      * @return string to call a function to get a substring
-     * @access public
      */
-    function substring($value, $position = 1, $length = null)
+    public function substring($value, $position = 1, $length = null)
     {
         if (null !== $length) {
             return "SUBSTRING(CAST($value AS VARCHAR) FROM $position FOR $length)";
@@ -120,9 +117,8 @@ class MDB2_Driver_Function_pgsql extends MDB2_Driver_Function_Common
      * return string to call a function to get random value inside an SQL statement
      *
      * @return return string to generate float between 0 and 1
-     * @access public
      */
-    function random()
+    public function random()
     {
         return 'RANDOM()';
     }
