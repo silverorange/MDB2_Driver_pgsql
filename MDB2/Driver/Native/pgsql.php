@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------+
-// | PHP versions 4 and 5                                                 |
+// | PHP version 5                                                        |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1998-2006 Manuel Lemos, Tomas V.V.Cox,                 |
 // | Stig. S. Bakken, Lukas Smith                                         |
@@ -49,13 +49,12 @@ require_once 'MDB2/Driver/Native/Common.php';
 /**
  * MDB2 PostGreSQL driver for the native module
  *
- * @package MDB2
+ * @package  MDB2
  * @category Database
- * @author  Paul Cooper <pgc@ucecom.com>
+ * @author   Paul Cooper <pgc@ucecom.com>
  */
 class MDB2_Driver_Native_pgsql extends MDB2_Driver_Native_Common
 {
-    // }}}
     // {{{ deleteOID()
 
     /**
@@ -63,9 +62,8 @@ class MDB2_Driver_Native_pgsql extends MDB2_Driver_Native_Common
      *
      * @param integer    $OID
      * @return mixed MDB2_OK on success or MDB2 Error Object on failure
-     * @access public
      */
-    function deleteOID($OID)
+    public function deleteOID($OID)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -84,5 +82,7 @@ class MDB2_Driver_Native_pgsql extends MDB2_Driver_Native_Common
         return MDB2_OK;
     }
 
+    // }}}
 }
+
 ?>
