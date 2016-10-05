@@ -165,6 +165,12 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
             $length = !empty($field['length']) ? $field['length'] : 18;
             $scale = !empty($field['scale']) ? $field['scale'] : $db->options['decimal_places'];
             return 'NUMERIC('.$length.','.$scale.')';
+        case 'uuid':
+            return 'UUID';
+        case 'json':
+            return 'JSON';
+        case 'jsonb':
+            return 'JSONB';
         }
     }
 
@@ -311,6 +317,44 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
             return $value;
         }
         return "'".$value."'";
+    }
+
+    // }}}
+    // {{{ _quoteJSON()
+
+    /**
+     * Convert a JSON object or array into a DBMS specific format that is suitable to
+     * compose query statements.
+     *
+     * @param stdObject|array $value JSON value that is intended to be converted.
+     * @param bool $quote determines if the value should be quoted and escaped
+     * @param bool $escape_wildcards if to escape escape wildcards
+     * @return string text string that represents the given argument value in
+     *       a DBMS specific format.
+     */
+    protected function _quoteJSON($value, $quote, $escape_wildcards)
+    {
+        $json = parent::_quoteJSON($value, $quote, $escape_wildcards);
+        return $json.'::json';
+    }
+
+    // }}}
+    // {{{ _quoteUUID()
+
+    /**
+     * Convert a UUID value into a DBMS specific format that is suitable to
+     * compose query statements.
+     *
+     * @param string $value UUID value that is intended to be converted.
+     * @param bool $quote determines if the value should be quoted and escaped
+     * @param bool $escape_wildcards if to escape escape wildcards
+     * @return string text string that represents the given argument value in
+     *       a DBMS specific format.
+     */
+    protected function _quoteUUID($value, $quote, $escape_wildcards)
+    {
+        $uuid = parent::_quoteUUID($value, $quote, $escape_wildcards);
+        return $uuid.'::uuid';
     }
 
     // }}}
@@ -501,6 +545,18 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
         case 'year':
             $type[] = 'integer';
             $type[] = 'date';
+            $length = null;
+            break;
+        case 'uuid':
+            $type[] = 'uuid';
+            $length = null;
+            break;
+        case 'json':
+            $type[] = 'json';
+            $length = null;
+            break;
+        case 'jsonb':
+            $type[] = 'jsonb';
             $length = null;
             break;
         default:
