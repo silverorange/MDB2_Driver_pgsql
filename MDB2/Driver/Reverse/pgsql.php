@@ -45,8 +45,6 @@
 //
 // $Id$
 
-require_once 'MDB2/Driver/Reverse/Common.php';
-
 /**
  * MDB2 PostGreSQL driver for the schema reverse engineering module
  *

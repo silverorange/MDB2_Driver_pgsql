@@ -19,8 +19,5 @@
 	},
 	"autoload": {
 		"classmap": [ "MDB2/" ]
-	},
-	"include-path": [
-		"./"
-	]
+	}
 }
