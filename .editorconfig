@@ -21,4 +21,3 @@ trim_trailing_whitespace = false
 
 [Jenkinsfile]
 indent_size = 4
-
