@@ -17,6 +17,9 @@
 		"pear/pear-core-minimal": "^1.9.0",
 		"silverorange/mdb2": "^2.7.0"
 	},
+	"require-dev": {
+		"squizlabs/php_codesniffer": "^3.0.0"
+	},
 	"autoload": {
 		"classmap": [ "MDB2/" ]
 	},
