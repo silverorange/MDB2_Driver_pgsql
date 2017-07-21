@@ -1,8 +1,9 @@
 <?php
+// vim: set et ts=4 sw=4 fdm=marker:
 // +----------------------------------------------------------------------+
 // | PHP version 5                                                        |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 1998-2006 Manuel Lemos, Tomas V.V.Cox,                 |
+// | Copyright (c) 1998-2008 Manuel Lemos, Tomas V.V.Cox,                 |
 // | Stig. S. Bakken, Lukas Smith                                         |
 // | All rights reserved.                                                 |
 // +----------------------------------------------------------------------+
@@ -41,43 +42,81 @@
 // +----------------------------------------------------------------------+
 // | Author: Paul Cooper <pgc@ucecom.com>                                 |
 // +----------------------------------------------------------------------+
-//
-// $Id$
 
 /**
- * MDB2 PostGreSQL driver for the native module
+ * MDB2 PostGreSQL buffered result driver
  *
  * @package  MDB2
  * @category Database
  * @author   Paul Cooper <pgc@ucecom.com>
  */
-class MDB2_Driver_Native_pgsql extends MDB2_Driver_Native_Common
+class MDB2_BufferedResult_pgsql extends MDB2_Result_pgsql
 {
-    // {{{ deleteOID()
+    // {{{ seek()
 
     /**
-     * delete an OID
+     * Seek to a specific row in a result set
      *
-     * @param integer    $OID
-     * @return mixed MDB2_OK on success or MDB2 Error Object on failure
+     * @param int    $rownum    number of the row where the data can be found
+     * @return mixed MDB2_OK on success, a MDB2 error on failure
      */
-    public function deleteOID($OID)
+    public function seek($rownum = 0)
     {
-        $db = $this->getDBInstance();
-        if (MDB2::isError($db)) {
-            return $db;
+        if ($this->rownum != ($rownum - 1) && !@pg_result_seek($this->result, $rownum)) {
+            if (false === $this->result) {
+                return $this->db->raiseError(MDB2_ERROR_NEED_MORE_DATA, null, null,
+                    'resultset has already been freed', __FUNCTION__);
+            }
+            if (null === $this->result) {
+                return MDB2_OK;
+            }
+            return $this->db->raiseError(MDB2_ERROR_INVALID, null, null,
+                'tried to seek to an invalid row number ('.$rownum.')', __FUNCTION__);
         }
-
-        $connection = $db->getConnection();
-        if (MDB2::isError($connection)) {
-            return $connection;
-        }
-
-        if (!@pg_lo_unlink($connection, $OID)) {
-            return $db->raiseError(null, null, null,
-                'Unable to unlink OID: '.$OID, __FUNCTION__);
-        }
+        $this->rownum = $rownum - 1;
         return MDB2_OK;
+    }
+
+    // }}}
+    // {{{ valid()
+
+    /**
+     * Check if the end of the result set has been reached
+     *
+     * @return mixed true or false on sucess, a MDB2 error on failure
+     */
+    public function valid()
+    {
+        $numrows = $this->numRows();
+        if (MDB2::isError($numrows)) {
+            return $numrows;
+        }
+        return $this->rownum < ($numrows - 1);
+    }
+
+    // }}}
+    // {{{ numRows()
+
+    /**
+     * Returns the number of rows in a result object
+     *
+     * @return mixed MDB2 Error Object or the number of rows
+     */
+    public function numRows()
+    {
+        $rows = @pg_num_rows($this->result);
+        if (null === $rows) {
+            if (false === $this->result) {
+                return $this->db->raiseError(MDB2_ERROR_NEED_MORE_DATA, null, null,
+                    'resultset has already been freed', __FUNCTION__);
+            }
+            if (null === $this->result) {
+                return 0;
+            }
+            return $this->db->raiseError(null, null, null,
+                'Could not get row count', __FUNCTION__);
+        }
+        return $rows;
     }
 
     // }}}
