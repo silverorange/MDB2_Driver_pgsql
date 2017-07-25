@@ -53,6 +53,7 @@
  * @author   Paul Cooper <pgc@ucecom.com>
  * @license  http://opensource.org/licenses/bsd-license.php BSD-2-Clause
  */
+// @codingStandardsIgnoreLine
 class MDB2_Result_pgsql extends MDB2_Result_Common
 {
     // {{{ fetchRow()

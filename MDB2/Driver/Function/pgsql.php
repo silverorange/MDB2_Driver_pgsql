@@ -53,6 +53,7 @@
  * @author   Lukas Smith <smith@pooteeweet.org>
  * @license  http://opensource.org/licenses/bsd-license.php BSD-2-Clause
  */
+// @codingStandardsIgnoreLine
 class MDB2_Driver_Function_pgsql extends MDB2_Driver_Function_Common
 {
     // {{{ executeStoredProc()

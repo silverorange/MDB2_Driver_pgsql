@@ -53,6 +53,7 @@
  * @author   Paul Cooper <pgc@ucecom.com>
  * @license  http://opensource.org/licenses/bsd-license.php BSD-2-Clause
  */
+// @codingStandardsIgnoreLine
 class MDB2_Driver_pgsql extends MDB2_Driver_Common
 {
     // {{{ properties
@@ -465,7 +466,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
             );
         }
 
-       if (empty($this->dsn['disable_iso_date'])) {
+        if (empty($this->dsn['disable_iso_date'])) {
             if (!@pg_query($connection, "SET SESSION DATESTYLE = 'ISO'")) {
                 return $this->raiseError(
                     null,
@@ -475,7 +476,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
                     __FUNCTION__
                 );
             }
-       }
+        }
 
         if (!empty($this->dsn['charset'])) {
             $result = $this->setCharset($this->dsn['charset'], $connection);
@@ -488,16 +489,26 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
         if (function_exists('pg_parameter_status')) {
             $version = pg_parameter_status($connection, 'server_version');
             if ($version == false) {
-                return $this->raiseError(null, null, null,
-                  'Unable to retrieve server version', __FUNCTION__);
+                return $this->raiseError(
+                    null,
+                    null,
+                    null,
+                    'Unable to retrieve server version',
+                    __FUNCTION__
+                );
             }
             $version = explode('.', $version);
             if ($version['0'] > 8
                 || ($version['0'] == 8 && $version['1'] >= 2)
             ) {
                 if (!@pg_query($connection, "SET SESSION STANDARD_CONFORMING_STRINGS = OFF")) {
-                    return $this->raiseError(null, null, null,
-                      'Unable to set standard_conforming_strings to off', __FUNCTION__);
+                    return $this->raiseError(
+                        null,
+                        null,
+                        null,
+                        'Unable to set standard_conforming_strings to off',
+                        __FUNCTION__
+                    );
                 }
 
                 if (!@pg_query($connection, "SET SESSION ESCAPE_STRING_WARNING = OFF")) {

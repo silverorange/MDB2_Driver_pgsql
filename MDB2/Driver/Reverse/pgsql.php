@@ -55,6 +55,7 @@
  * @author   Lorenzo Alberton <l.alberton@quipo.it>
  * @license  http://opensource.org/licenses/bsd-license.php BSD-2-Clause
  */
+// @codingStandardsIgnoreLine
 class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
 {
     // {{{ getTableFieldDefinition()
