@@ -408,7 +408,7 @@ class MDB2_Driver_Manager_pgsql extends MDB2_Driver_Manager_Common
                             MDB2_ERROR_CANNOT_ALTER,
                             null,
                             null,
-                            'changing column type for "' . $change_name . '\" requires PostgreSQL 8.0 or above',
+                            'changing column type for "' . $change_name . '" requires PostgreSQL 8.0 or above',
                             __FUNCTION__
                         );
                     }
