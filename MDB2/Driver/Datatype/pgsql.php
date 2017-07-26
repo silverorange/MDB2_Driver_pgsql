@@ -1,59 +1,62 @@
 <?php
-// +----------------------------------------------------------------------+
-// | PHP version 5                                                        |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 1998-2007 Manuel Lemos, Tomas V.V.Cox,                 |
-// | Stig. S. Bakken, Lukas Smith                                         |
-// | All rights reserved.                                                 |
-// +----------------------------------------------------------------------+
-// | MDB2 is a merge of PEAR DB and Metabases that provides a unified DB  |
-// | API as well as database abstraction for PHP applications.            |
-// | This LICENSE is in the BSD license style.                            |
-// |                                                                      |
-// | Redistribution and use in source and binary forms, with or without   |
-// | modification, are permitted provided that the following conditions   |
-// | are met:                                                             |
-// |                                                                      |
-// | Redistributions of source code must retain the above copyright       |
-// | notice, this list of conditions and the following disclaimer.        |
-// |                                                                      |
-// | Redistributions in binary form must reproduce the above copyright    |
-// | notice, this list of conditions and the following disclaimer in the  |
-// | documentation and/or other materials provided with the distribution. |
-// |                                                                      |
-// | Neither the name of Manuel Lemos, Tomas V.V.Cox, Stig. S. Bakken,    |
-// | Lukas Smith nor the names of his contributors may be used to endorse |
-// | or promote products derived from this software without specific prior|
-// | written permission.                                                  |
-// |                                                                      |
-// | THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS  |
-// | "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT    |
-// | LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS    |
-// | FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE      |
-// | REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,          |
-// | INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, |
-// | BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS|
-// |  OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED  |
-// | AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT          |
-// | LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY|
-// | WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE          |
-// | POSSIBILITY OF SUCH DAMAGE.                                          |
-// +----------------------------------------------------------------------+
-// | Author: Paul Cooper <pgc@ucecom.com>                                 |
-// +----------------------------------------------------------------------+
-//
-// $Id$
+
+/**
+ * +----------------------------------------------------------------------+
+ * | PHP version 5                                                        |
+ * +----------------------------------------------------------------------+
+ * | Copyright (c) 1998-2007 Manuel Lemos, Tomas V.V.Cox,                 |
+ * | Stig. S. Bakken, Lukas Smith                                         |
+ * | All rights reserved.                                                 |
+ * +----------------------------------------------------------------------+
+ * | MDB2 is a merge of PEAR DB and Metabases that provides a unified DB  |
+ * | API as well as database abstraction for PHP applications.            |
+ * | This LICENSE is in the BSD license style.                            |
+ * |                                                                      |
+ * | Redistribution and use in source and binary forms, with or without   |
+ * | modification, are permitted provided that the following conditions   |
+ * | are met:                                                             |
+ * |                                                                      |
+ * | Redistributions of source code must retain the above copyright       |
+ * | notice, this list of conditions and the following disclaimer.        |
+ * |                                                                      |
+ * | Redistributions in binary form must reproduce the above copyright    |
+ * | notice, this list of conditions and the following disclaimer in the  |
+ * | documentation and/or other materials provided with the distribution. |
+ * |                                                                      |
+ * | Neither the name of Manuel Lemos, Tomas V.V.Cox, Stig. S. Bakken,    |
+ * | Lukas Smith nor the names of his contributors may be used to endorse |
+ * | or promote products derived from this software without specific prior|
+ * | written permission.                                                  |
+ * |                                                                      |
+ * | THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS  |
+ * | "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT    |
+ * | LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS    |
+ * | FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE      |
+ * | REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,          |
+ * | INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, |
+ * | BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS|
+ * |  OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED  |
+ * | AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT          |
+ * | LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY|
+ * | WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE          |
+ * | POSSIBILITY OF SUCH DAMAGE.                                          |
+ * +----------------------------------------------------------------------+
+ * | Author: Paul Cooper <pgc@ucecom.com>                                 |
+ * +----------------------------------------------------------------------+
+ */
 
 /**
  * MDB2 PostGreSQL driver
  *
- * @package  MDB2
  * @category Database
+ * @package  MDB2
  * @author   Paul Cooper <pgc@ucecom.com>
+ * @license  http://opensource.org/licenses/bsd-license.php BSD-2-Clause
  */
+// @codingStandardsIgnoreLine
 class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
 {
-    // {{{ _baseConvertResult()
+    // {{{ baseConvertResult()
 
     /**
      * General type conversion method
@@ -63,7 +66,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @param boolean $rtrim [optional] when TRUE [default], apply rtrim() to text
      * @return object a MDB2 error on failure
      */
-    protected function _baseConvertResult($value, $type, $rtrim = true)
+    protected function baseConvertResult($value, $type, $rtrim = true)
     {
         if (null === $value) {
             return null;
@@ -81,9 +84,9 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
             return substr($value, 0, strlen('YYYY-MM-DD HH:MM:SS'));
         case 'blob':
             $value = pg_unescape_bytea($value);
-            return parent::_baseConvertResult($value, $type, $rtrim);
+            return parent::baseConvertResult($value, $type, $rtrim);
         }
-        return parent::_baseConvertResult($value, $type, $rtrim);
+        return parent::baseConvertResult($value, $type, $rtrim);
     }
 
     // }}}
@@ -173,7 +176,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
     }
 
     // }}}
-    // {{{ _getIntegerDeclaration()
+    // {{{ getIntegerDeclaration()
 
     /**
      * Obtain DBMS specific SQL code portion needed to declare an integer type
@@ -197,7 +200,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @return string DBMS specific SQL code portion that should be used to
      *       declare the specified field.
      */
-    protected function _getIntegerDeclaration($name, $field)
+    protected function getIntegerDeclaration($name, $field)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
@@ -228,7 +231,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
     }
 
     // }}}
-    // {{{ _quoteCLOB()
+    // {{{ quoteCLOB()
 
     /**
      * Convert a text value into a DBMS specific format that is suitable to
@@ -240,23 +243,23 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @return string text string that represents the given argument value in
      *      a DBMS specific format.
      */
-    protected function _quoteCLOB($value, $quote, $escape_wildcards)
+    protected function quoteCLOB($value, $quote, $escape_wildcards)
     {
         $db = $this->getDBInstance();
         if (MDB2::isError($db)) {
             return $db;
         }
         if ($db->options['lob_allow_url_include']) {
-            $value = $this->_readFile($value);
+            $value = $this->readFile($value);
             if (MDB2::isError($value)) {
                 return $value;
             }
         }
-        return $this->_quoteText($value, $quote, $escape_wildcards);
+        return $this->quoteText($value, $quote, $escape_wildcards);
     }
 
     // }}}
-    // {{{ _quoteBLOB()
+    // {{{ quoteBLOB()
 
     /**
      * Convert a text value into a DBMS specific format that is suitable to
@@ -268,7 +271,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @return string text string that represents the given argument value in
      *      a DBMS specific format.
      */
-    protected function _quoteBLOB($value, $quote, $escape_wildcards)
+    protected function quoteBLOB($value, $quote, $escape_wildcards)
     {
         if (!$quote) {
             return $value;
@@ -278,7 +281,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
             return $db;
         }
         if ($db->options['lob_allow_url_include']) {
-            $value = $this->_readFile($value);
+            $value = $this->readFile($value);
             if (MDB2::isError($value)) {
                 return $value;
             }
@@ -296,7 +299,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
     }
 
     // }}}
-    // {{{ _quoteBoolean()
+    // {{{ quoteBoolean()
 
     /**
      * Convert a text value into a DBMS specific format that is suitable to
@@ -308,7 +311,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @return string text string that represents the given argument value in
      *       a DBMS specific format.
      */
-    protected function _quoteBoolean($value, $quote, $escape_wildcards)
+    protected function quoteBoolean($value, $quote, $escape_wildcards)
     {
         $value = $value ? 't' : 'f';
         if (!$quote) {
@@ -318,7 +321,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
     }
 
     // }}}
-    // {{{ _quoteJSON()
+    // {{{ quoteJSON()
 
     /**
      * Convert a JSON object or array into a DBMS specific format that is suitable to
@@ -330,14 +333,14 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @return string text string that represents the given argument value in
      *       a DBMS specific format.
      */
-    protected function _quoteJSON($value, $quote, $escape_wildcards)
+    protected function quoteJSON($value, $quote, $escape_wildcards)
     {
-        $json = parent::_quoteJSON($value, $quote, $escape_wildcards);
+        $json = parent::quoteJSON($value, $quote, $escape_wildcards);
         return $json.'::json';
     }
 
     // }}}
-    // {{{ _quoteUUID()
+    // {{{ quoteUUID()
 
     /**
      * Convert a UUID value into a DBMS specific format that is suitable to
@@ -349,9 +352,9 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @return string text string that represents the given argument value in
      *       a DBMS specific format.
      */
-    protected function _quoteUUID($value, $quote, $escape_wildcards)
+    protected function quoteUUID($value, $quote, $escape_wildcards)
     {
-        $uuid = parent::_quoteUUID($value, $quote, $escape_wildcards);
+        $uuid = parent::quoteUUID($value, $quote, $escape_wildcards);
         return $uuid.'::uuid';
     }
 
@@ -395,8 +398,13 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
                 $match = $field.'NOT LIKE ';
                 break;
             default:
-                return $db->raiseError(MDB2_ERROR_UNSUPPORTED, null, null,
-                    'not a supported operator type:'. $operator, __FUNCTION__);
+                return $db->raiseError(
+                    MDB2_ERROR_UNSUPPORTED,
+                    null,
+                    null,
+                    'not a supported operator type:'. $operator,
+                    __FUNCTION__
+                );
             }
         }
         $match.= "'";
@@ -430,7 +438,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
     }
 
     // }}}
-    // {{{ _mapNativeDatatype()
+    // {{{ mapNativeDatatypeInternal()
 
     /**
      * Maps a native array description of a field to a MDB2 datatype and length
@@ -438,7 +446,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      * @param array  $field native field description
      * @return array containing the various possible types, length, sign, fixed
      */
-    protected function _mapNativeDatatype($field)
+    protected function mapNativeDatatypeInternal($field)
     {
         $db_type = strtolower($field['type']);
         $length = $field['length'];
@@ -562,8 +570,13 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
             if (MDB2::isError($db)) {
                 return $db;
             }
-            return $db->raiseError(MDB2_ERROR_UNSUPPORTED, null, null,
-                'unknown database attribute type: '.$db_type, __FUNCTION__);
+            return $db->raiseError(
+                MDB2_ERROR_UNSUPPORTED,
+                null,
+                null,
+                'unknown database attribute type: '.$db_type,
+                __FUNCTION__
+            );
         }
 
         if ((int)$length <= 0) {
@@ -598,19 +611,19 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
         }
 
         switch ($type) {
-            case 'integer':
-                return 'int';
-            case 'boolean':
-                return 'bool';
-            case 'decimal':
-            case 'float':
-                return 'numeric';
-            case 'clob':
-                return 'text';
-            case 'blob':
-                return 'bytea';
-            default:
-                break;
+        case 'integer':
+            return 'int';
+        case 'boolean':
+            return 'bool';
+        case 'decimal':
+        case 'float':
+            return 'numeric';
+        case 'clob':
+            return 'text';
+        case 'blob':
+            return 'bytea';
+        default:
+            break;
         }
         return $type;
     }

@@ -9,5 +9,5 @@
 
   <file>./MDB2</file>
 
-  <rule ref="PEAR" />
+  <rule ref="SilverorangePEAR" />
 </ruleset>

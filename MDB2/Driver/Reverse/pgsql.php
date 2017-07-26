@@ -1,58 +1,61 @@
 <?php
-// +----------------------------------------------------------------------+
-// | PHP version 5                                                        |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 1998-2008 Manuel Lemos, Tomas V.V.Cox,                 |
-// | Stig. S. Bakken, Lukas Smith                                         |
-// | All rights reserved.                                                 |
-// +----------------------------------------------------------------------+
-// | MDB2 is a merge of PEAR DB and Metabases that provides a unified DB  |
-// | API as well as database abstraction for PHP applications.            |
-// | This LICENSE is in the BSD license style.                            |
-// |                                                                      |
-// | Redistribution and use in source and binary forms, with or without   |
-// | modification, are permitted provided that the following conditions   |
-// | are met:                                                             |
-// |                                                                      |
-// | Redistributions of source code must retain the above copyright       |
-// | notice, this list of conditions and the following disclaimer.        |
-// |                                                                      |
-// | Redistributions in binary form must reproduce the above copyright    |
-// | notice, this list of conditions and the following disclaimer in the  |
-// | documentation and/or other materials provided with the distribution. |
-// |                                                                      |
-// | Neither the name of Manuel Lemos, Tomas V.V.Cox, Stig. S. Bakken,    |
-// | Lukas Smith nor the names of his contributors may be used to endorse |
-// | or promote products derived from this software without specific prior|
-// | written permission.                                                  |
-// |                                                                      |
-// | THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS  |
-// | "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT    |
-// | LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS    |
-// | FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE      |
-// | REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,          |
-// | INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, |
-// | BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS|
-// |  OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED  |
-// | AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT          |
-// | LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY|
-// | WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE          |
-// | POSSIBILITY OF SUCH DAMAGE.                                          |
-// +----------------------------------------------------------------------+
-// | Authors: Paul Cooper <pgc@ucecom.com>                                |
-// |          Lorenzo Alberton <l.alberton@quipo.it>                      |
-// +----------------------------------------------------------------------+
-//
-// $Id$
+
+/**
+ * +----------------------------------------------------------------------+
+ * | PHP version 5                                                        |
+ * +----------------------------------------------------------------------+
+ * | Copyright (c) 1998-2008 Manuel Lemos, Tomas V.V.Cox,                 |
+ * | Stig. S. Bakken, Lukas Smith                                         |
+ * | All rights reserved.                                                 |
+ * +----------------------------------------------------------------------+
+ * | MDB2 is a merge of PEAR DB and Metabases that provides a unified DB  |
+ * | API as well as database abstraction for PHP applications.            |
+ * | This LICENSE is in the BSD license style.                            |
+ * |                                                                      |
+ * | Redistribution and use in source and binary forms, with or without   |
+ * | modification, are permitted provided that the following conditions   |
+ * | are met:                                                             |
+ * |                                                                      |
+ * | Redistributions of source code must retain the above copyright       |
+ * | notice, this list of conditions and the following disclaimer.        |
+ * |                                                                      |
+ * | Redistributions in binary form must reproduce the above copyright    |
+ * | notice, this list of conditions and the following disclaimer in the  |
+ * | documentation and/or other materials provided with the distribution. |
+ * |                                                                      |
+ * | Neither the name of Manuel Lemos, Tomas V.V.Cox, Stig. S. Bakken,    |
+ * | Lukas Smith nor the names of his contributors may be used to endorse |
+ * | or promote products derived from this software without specific prior|
+ * | written permission.                                                  |
+ * |                                                                      |
+ * | THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS  |
+ * | "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT    |
+ * | LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS    |
+ * | FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE      |
+ * | REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,          |
+ * | INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, |
+ * | BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS|
+ * |  OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED  |
+ * | AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT          |
+ * | LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY|
+ * | WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE          |
+ * | POSSIBILITY OF SUCH DAMAGE.                                          |
+ * +----------------------------------------------------------------------+
+ * | Authors: Paul Cooper <pgc@ucecom.com>                                |
+ * |          Lorenzo Alberton <l.alberton@quipo.it>                      |
+ * +----------------------------------------------------------------------+
+ */
 
 /**
  * MDB2 PostGreSQL driver for the schema reverse engineering module
  *
- * @package  MDB2
  * @category Database
+ * @package  MDB2
  * @author   Paul Cooper <pgc@ucecom.com>
  * @author   Lorenzo Alberton <l.alberton@quipo.it>
+ * @license  http://opensource.org/licenses/bsd-license.php BSD-2-Clause
  */
+// @codingStandardsIgnoreLine
 class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
 {
     // {{{ getTableFieldDefinition()
@@ -124,8 +127,13 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
         }
 
         if (empty($column)) {
-            return $db->raiseError(MDB2_ERROR_NOT_FOUND, null, null,
-                'it was not specified an existing table column', __FUNCTION__);
+            return $db->raiseError(
+                MDB2_ERROR_NOT_FOUND,
+                null,
+                null,
+                'it was not specified an existing table column',
+                __FUNCTION__
+            );
         }
 
         $column = array_change_key_case($column, CASE_LOWER);
@@ -144,12 +152,12 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
             && !preg_match("/nextval\('([^']+)'/", $column['default'])
         ) {
             $pattern = '/^\'(.*)\'::[\w ]+$/i';
-            $default = $column['default'];#substr($column['adsrc'], 1, -1);
+            $default = $column['default'];
             if ((null === $default) && $notnull) {
                 $default = '';
             } elseif (!empty($default) && preg_match($pattern, $default)) {
-                //remove data type cast
-                $default = preg_replace ($pattern, '\\1', $default);
+                // remove data type cast
+                $default = preg_replace($pattern, '\\1', $default);
             }
         }
         $autoincrement = false;
@@ -217,8 +225,13 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
         }
 
         if (empty($row)) {
-            return $db->raiseError(MDB2_ERROR_NOT_FOUND, null, null,
-                'it was not specified an existing table index', __FUNCTION__);
+            return $db->raiseError(
+                MDB2_ERROR_NOT_FOUND,
+                null,
+                null,
+                'it was not specified an existing table index',
+                __FUNCTION__
+            );
         }
 
         $row = array_change_key_case($row, CASE_LOWER);
@@ -337,8 +350,13 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
                 return $row;
             }
             if (empty($row)) {
-                return $db->raiseError(MDB2_ERROR_NOT_FOUND, null, null,
-                    $constraint_name . ' is not an existing table constraint', __FUNCTION__);
+                return $db->raiseError(
+                    MDB2_ERROR_NOT_FOUND,
+                    null,
+                    null,
+                    $constraint_name . ' is not an existing table constraint',
+                    __FUNCTION__
+                );
             }
             $uniqueIndex = true;
         }
@@ -393,7 +411,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
                 'sorting' => 'ascending',
             );
         }
-        
+
         if ($definition['foreign']) {
             $query = 'SELECT a.attname
                         FROM pg_constraint c
@@ -412,7 +430,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
                 );
             }
         }
-        
+
         if ($definition['check']) {
             $check_def = $db->queryOne("SELECT pg_get_constraintdef(" . $row['oid'] . ", 't')");
             // ...
@@ -484,7 +502,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
         );
         return $db->queryRow($query, $types, MDB2_FETCHMODE_ASSOC);
     }
-    
+
     // }}}
     // {{{ tableInfo()
 
@@ -509,7 +527,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
     public function tableInfo($result, $mode = null)
     {
         if (is_string($result)) {
-           return parent::tableInfo($result, $mode);
+            return parent::tableInfo($result, $mode);
         }
 
         $db = $this->getDBInstance();
@@ -519,8 +537,13 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
 
         $resource = MDB2::isResultCommon($result) ? $result->getResource() : $result;
         if (!is_resource($resource)) {
-            return $db->raiseError(MDB2_ERROR_NEED_MORE_DATA, null, null,
-                'Could not generate result resource', __FUNCTION__);
+            return $db->raiseError(
+                MDB2_ERROR_NEED_MORE_DATA,
+                null,
+                null,
+                'Could not generate result resource',
+                __FUNCTION__
+            );
         }
 
         if ($db->options['portability'] & MDB2_PORTABILITY_FIX_CASE) {
@@ -551,7 +574,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
             );
             $mdb2type_info = $db->datatype->mapNativeDatatype($res[$i]);
             if (MDB2::isError($mdb2type_info)) {
-               return $mdb2type_info;
+                return $mdb2type_info;
             }
             $res[$i]['mdb2type'] = $mdb2type_info[0][0];
             if ($mode & MDB2_TABLEINFO_ORDER) {
