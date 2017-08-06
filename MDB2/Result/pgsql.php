@@ -148,7 +148,7 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
      *                  Some DBMS may not return any columns when the result set
      *                  does not contain any rows.
      */
-    protected function getColumnNames()
+    public function getColumnNames($flip = false)
     {
         $columns = array();
         $numcols = $this->numCols();
