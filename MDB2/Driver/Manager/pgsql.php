@@ -475,7 +475,7 @@ class MDB2_Driver_Manager_pgsql extends MDB2_Driver_Manager_Common
             return $result;
         }
         if ($db->options['portability'] & MDB2_PORTABILITY_FIX_CASE) {
-            $result = array_map(($db->options['field_case'] == CASE_LOWER ? 'strtolower' : 'strtoupper'), $result);
+            $result = array_map(($db->options['field_case'] === CASE_LOWER ? 'mb_strtolower' : 'mb_strtoupper'), $result);
         }
         return $result;
     }
@@ -530,7 +530,7 @@ class MDB2_Driver_Manager_pgsql extends MDB2_Driver_Manager_Common
             return $result;
         }
         if ($db->options['portability'] & MDB2_PORTABILITY_FIX_CASE) {
-            $result = array_map(($db->options['field_case'] == CASE_LOWER ? 'strtolower' : 'strtoupper'), $result);
+            $result = array_map(($db->options['field_case'] === CASE_LOWER ? 'mb_strtolower' : 'mb_strtoupper'), $result);
         }
         return $result;
     }
@@ -558,7 +558,7 @@ class MDB2_Driver_Manager_pgsql extends MDB2_Driver_Manager_Common
             return $result;
         }
         if ($db->options['portability'] & MDB2_PORTABILITY_FIX_CASE) {
-            $result = array_map(($db->options['field_case'] == CASE_LOWER ? 'strtolower' : 'strtoupper'), $result);
+            $result = array_map(($db->options['field_case'] === CASE_LOWER ? 'mb_strtolower' : 'mb_strtoupper'), $result);
         }
         return $result;
     }
@@ -595,7 +595,7 @@ class MDB2_Driver_Manager_pgsql extends MDB2_Driver_Manager_Common
             return $result;
         }
         if ($db->options['portability'] & MDB2_PORTABILITY_FIX_CASE) {
-            $result = array_map(($db->options['field_case'] == CASE_LOWER ? 'strtolower' : 'strtoupper'), $result);
+            $result = array_map(($db->options['field_case'] === CASE_LOWER ? 'mb_strtolower' : 'mb_strtoupper'), $result);
         }
         return $result;
     }
@@ -621,7 +621,7 @@ class MDB2_Driver_Manager_pgsql extends MDB2_Driver_Manager_Common
                          pg_class tbl
                    WHERE trg.tgrelid = tbl.oid';
         if (null !== $table) {
-            $table = $db->quote(strtoupper($table), 'text');
+            $table = $db->quote(mb_strtoupper($table), 'text');
             $query .= " AND UPPER(tbl.relname) = $table";
         }
         $result = $db->queryCol($query);
@@ -629,7 +629,7 @@ class MDB2_Driver_Manager_pgsql extends MDB2_Driver_Manager_Common
             return $result;
         }
         if ($db->options['portability'] & MDB2_PORTABILITY_FIX_CASE) {
-            $result = array_map(($db->options['field_case'] == CASE_LOWER ? 'strtolower' : 'strtoupper'), $result);
+            $result = array_map(($db->options['field_case'] === CASE_LOWER ? 'mb_strtolower' : 'mb_strtoupper'), $result);
         }
         return $result;
     }
@@ -674,7 +674,7 @@ class MDB2_Driver_Manager_pgsql extends MDB2_Driver_Manager_Common
             return $result;
         }
         if ($db->options['portability'] & MDB2_PORTABILITY_FIX_CASE) {
-            $result = array_map(($db->options['field_case'] == CASE_LOWER ? 'strtolower' : 'strtoupper'), $result);
+            $result = array_map(($db->options['field_case'] === CASE_LOWER ? 'mb_strtolower' : 'mb_strtoupper'), $result);
         }
         return $result;
     }
@@ -882,7 +882,7 @@ class MDB2_Driver_Manager_pgsql extends MDB2_Driver_Manager_Common
         }
 
         if ($db->options['portability'] & MDB2_PORTABILITY_FIX_CASE
-            && $db->options['field_case'] == CASE_LOWER
+            && $db->options['field_case'] === CASE_LOWER
         ) {
             $result = array_change_key_case($result, $db->options['field_case']);
         }
@@ -968,7 +968,7 @@ class MDB2_Driver_Manager_pgsql extends MDB2_Driver_Manager_Common
             $result[] = $this->fixSequenceName($table_name);
         }
         if ($db->options['portability'] & MDB2_PORTABILITY_FIX_CASE) {
-            $result = array_map(($db->options['field_case'] == CASE_LOWER ? 'strtolower' : 'strtoupper'), $result);
+            $result = array_map(($db->options['field_case'] === CASE_LOWER ? 'mb_strtolower' : 'mb_strtoupper'), $result);
         }
         return $result;
     }

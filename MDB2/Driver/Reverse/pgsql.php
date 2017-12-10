@@ -148,7 +148,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
         }
         $default = null;
         if ($column['atthasdef'] === 't'
-            && strpos($column['default'], 'NULL') !== 0
+            && mb_strpos($column['default'], 'NULL') !== 0
             && !preg_match("/nextval\('([^']+)'/", $column['default'])
         ) {
             $pattern = '/^\'(.*)\'::[\w ]+$/i';
@@ -547,10 +547,10 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
         }
 
         if ($db->options['portability'] & MDB2_PORTABILITY_FIX_CASE) {
-            if ($db->options['field_case'] == CASE_LOWER) {
-                $case_func = 'strtolower';
+            if ($db->options['field_case'] === CASE_LOWER) {
+                $case_func = 'mb_strtolower';
             } else {
-                $case_func = 'strtoupper';
+                $case_func = 'mb_strtoupper';
             }
         } else {
             $case_func = 'strval';

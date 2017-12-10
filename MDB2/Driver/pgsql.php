@@ -815,8 +815,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
             && !preg_match('/LIMIT\s*\d(?:\s*(?:,|OFFSET)\s*\d+)?(?:[^\)]*)?$/i', $query)
         ) {
             $query = rtrim($query);
-            if (substr($query, -1) == ';') {
-                $query = substr($query, 0, -1);
+            if (mb_substr($query, -1) === ';') {
+                $query = mb_substr($query, 0, -1);
             }
             if ($is_manip) {
                 $query = $this->modifyManipQuery($query, $limit);
@@ -839,8 +839,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      */
     protected function modifyManipQuery($query, $limit)
     {
-        $pos = strpos(strtolower($query), 'where');
-        $where = $pos ? substr($query, $pos) : '';
+        $pos = mb_strpos(mb_strtolower($query), 'where');
+        $where = $pos ? mb_substr($query, $pos) : '';
 
         $manip_clause = '(\bDELETE\b\s+(?:\*\s+)?\bFROM\b|\bUPDATE\b)';
         $from_clause  = '([\w\.]+)';
@@ -850,7 +850,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
         if ($matches) {
             $manip = $match[1];
             $from  = $match[2];
-            $what  = (count($matches) == 6) ? $match[5] : $match[3];
+            $what  = (count($matches) === 6) ? $match[5] : $match[3];
             return $manip.' '.$from.' '.$what.' WHERE ctid=(SELECT ctid FROM '.$from.' '.$where.' LIMIT '.$limit.')';
         }
         //return error?
@@ -954,13 +954,13 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
         $colon = ':';
         $positions = array();
         $position = $parameter = 0;
-        while ($position < strlen($query)) {
-            $q_position = strpos($query, $question, $position);
-            $c_position = strpos($query, $colon, $position);
+        while ($position < mb_strlen($query)) {
+            $q_position = mb_strpos($query, $question, $position);
+            $c_position = mb_strpos($query, $colon, $position);
             //skip "::type" cast ("select id::varchar(20) from sometable where name=?")
-            $doublecolon_position = strpos($query, '::', $position);
+            $doublecolon_position = mb_strpos($query, '::', $position);
             if ($doublecolon_position !== false && $doublecolon_position == $c_position) {
-                $c_position = strpos($query, $colon, $position+2);
+                $c_position = mb_strpos($query, $colon, $position + 2);
             }
             if ($q_position && $c_position) {
                 $p_position = min($q_position, $c_position);
@@ -1011,7 +1011,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
                         );
                         return $err;
                     }
-                    $length = strlen($param) + 1;
+                    $length = mb_strlen($param) + 1;
                     $name = $param;
                 }
                 if ($pgtypes !== false) {
@@ -1037,8 +1037,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
                     //$next_parameter = $parameter;
                     $positions[] = $name;
                 }
-                $query = substr_replace($query, '$'.$parameter, $position, $length);
-                $position = $p_position + strlen($parameter);
+                $query = mb_substr($query, 0, $position) . '$' . $parameter . mb_substr($query, $position + $length);
+                $position = $p_position + mb_strlen($parameter);
             } else {
                 $position = $p_position;
             }
@@ -1049,7 +1049,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
         }
         static $prep_statement_counter = 1;
         $statement_name = sprintf($this->options['statement_format'], $this->phptype, $prep_statement_counter++ . sha1(microtime() + mt_rand()));
-        $statement_name = substr(strtolower($statement_name), 0, $this->options['max_identifiers_length']);
+        $statement_name = mb_substr(mb_strtolower($statement_name), 0, $this->options['max_identifiers_length']);
         if (false === $pgtypes) {
             $result = @pg_prepare($connection, $statement_name, $query);
             if (!$result) {
@@ -1093,7 +1093,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
     public function getSequenceName($sqn)
     {
         if (false === $this->options['disable_smart_seqname']) {
-            if (strpos($sqn, '_') !== false) {
+            if (mb_strpos($sqn, '_') !== false) {
                 list($table, $field) = explode('_', $sqn, 2);
             }
             $schema_list = $this->queryOne("SELECT array_to_string(current_schemas(false), ',')");
