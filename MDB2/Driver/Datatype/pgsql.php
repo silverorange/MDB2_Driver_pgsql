@@ -79,9 +79,9 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
         case 'date':
             return $value;
         case 'time':
-            return substr($value, 0, strlen('HH:MM:SS'));
+            return mb_substr($value, 0, mb_strlen('HH:MM:SS'));
         case 'timestamp':
-            return substr($value, 0, strlen('YYYY-MM-DD HH:MM:SS'));
+            return mb_substr($value, 0, mb_strlen('YYYY-MM-DD HH:MM:SS'));
         case 'blob':
             $value = pg_unescape_bytea($value);
             return parent::baseConvertResult($value, $type, $rtrim);
@@ -381,7 +381,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
         $match = '';
         if (null !== $operator) {
             $field = (null === $field) ? '' : $field.' ';
-            $operator = strtoupper($operator);
+            $operator = mb_strtoupper($operator);
             switch ($operator) {
             // case insensitive
             case 'ILIKE':
@@ -448,7 +448,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
      */
     protected function mapNativeDatatypeInternal($field)
     {
-        $db_type = strtolower($field['type']);
+        $db_type = mb_strtolower($field['type']);
         $length = $field['length'];
         $type = array();
         $unsigned = $fixed = null;
@@ -499,7 +499,7 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
                 if (preg_match('/^(is|has)/', $field['name'])) {
                     $type = array_reverse($type);
                 }
-            } elseif (strstr($db_type, 'text')) {
+            } elseif (mb_strstr($db_type, 'text') !== false) {
                 $type[] = 'clob';
             }
             if ($fixed !== false) {
