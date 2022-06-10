@@ -216,12 +216,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
             return $connection;
         }
 
-        if ((is_a($connection, 'PgSql\Connection') || is_resource($connection))
-            && version_compare(PHP_VERSION, '5.2.0RC5', '>=')
-        ) {
+        if ((is_a($connection, 'PgSql\Connection') || is_resource($connection))) {
             $text = @pg_escape_string($connection, $text);
-        } else {
-            $text = @pg_escape_string($text);
         }
         return $text;
     }
@@ -452,9 +448,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
         }
 
         if ($this->isNewLinkSet()) {
-            if (version_compare(phpversion(), '4.3.0', '>=')) {
-                $params[] = PGSQL_CONNECT_FORCE_NEW;
-            }
+            $params[] = PGSQL_CONNECT_FORCE_NEW;
         }
 
         $connect_function = $persistent ? 'pg_pconnect' : 'pg_connect';
