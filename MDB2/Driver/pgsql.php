@@ -118,7 +118,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
         $error_code = MDB2_ERROR;
 
         $native_msg = '';
-        if (is_a($resource, 'PgSql\Result') || is_resource($resource)) {
+        if (is_a($error, 'PgSql\Result') || is_resource($error)) {
             $native_msg = @pg_result_error($error);
         } elseif ($this->connection) {
             $native_msg = @pg_last_error($this->connection);
