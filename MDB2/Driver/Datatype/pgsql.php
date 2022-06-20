@@ -286,15 +286,12 @@ class MDB2_Driver_Datatype_pgsql extends MDB2_Driver_Datatype_Common
                 return $value;
             }
         }
-        if (version_compare(PHP_VERSION, '5.2.0RC6', '>=')) {
-            $connection = $db->getConnection();
-            if (MDB2::isError($connection)) {
-                return $connection;
-            }
-            $value = @pg_escape_bytea($connection, $value);
-        } else {
-            $value = @pg_escape_bytea($value);
+        $connection = $db->getConnection();
+        if (MDB2::isError($connection)) {
+            return $connection;
         }
+        $value = @pg_escape_bytea($connection, $value);
+
         return "'".$value."'";
     }
 

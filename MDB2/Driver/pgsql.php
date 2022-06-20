@@ -118,7 +118,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
         $error_code = MDB2_ERROR;
 
         $native_msg = '';
-        if (is_resource($error)) {
+        if (is_a($error, 'PgSql\Result') || is_resource($error)) {
             $native_msg = @pg_result_error($error);
         } elseif ($this->connection) {
             $native_msg = @pg_last_error($this->connection);
@@ -215,10 +215,9 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
         if (MDB2::isError($connection)) {
             return $connection;
         }
-        if (is_resource($connection) && version_compare(PHP_VERSION, '5.2.0RC5', '>=')) {
+
+        if ((is_a($connection, 'PgSql\Connection') || is_resource($connection))) {
             $text = @pg_escape_string($connection, $text);
-        } else {
-            $text = @pg_escape_string($text);
         }
         return $text;
     }
@@ -449,9 +448,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
         }
 
         if ($this->isNewLinkSet()) {
-            if (version_compare(phpversion(), '4.3.0', '>=')) {
-                $params[] = PGSQL_CONNECT_FORCE_NEW;
-            }
+            $params[] = PGSQL_CONNECT_FORCE_NEW;
         }
 
         $connect_function = $persistent ? 'pg_pconnect' : 'pg_connect';
@@ -536,7 +533,9 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      */
     public function connect()
     {
-        if (is_resource($this->connection)) {
+        if (is_a($this->connection, 'PgSql\Connection')
+            || is_resource($this->connection)
+        ) {
             //if (count(array_diff($this->connected_dsn, $this->dsn)) == 0
             if (MDB2::areEquals($this->connected_dsn, $this->dsn)
                 && $this->connected_database_name == $this->database_name
@@ -644,7 +643,9 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
      */
     public function disconnect($force = true)
     {
-        if (is_resource($this->connection)) {
+        if (is_a($this->connection, 'PgSql\Connection')
+            || is_resource($this->connection)
+        ) {
             if ($this->in_transaction) {
                 $dsn = $this->dsn;
                 $database_name = $this->database_name;

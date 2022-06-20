@@ -232,7 +232,9 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
      */
     public function free()
     {
-        if (is_resource($this->result) && $this->db->connection) {
+        if ((is_a($this->result, 'PgSql\Result') || is_resource($this->result))
+            && $this->db->connection
+        ) {
             $free = @pg_free_result($this->result);
             if (false === $free) {
                 return $this->db->raiseError(
