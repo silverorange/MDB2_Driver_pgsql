@@ -127,7 +127,10 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
                 $error_code = MDB2_ERROR_CONNECT_FAILED;
             }
         } else {
-            $native_msg = @pg_last_error();
+            $php_error = error_get_last();
+            if ($php_error) {
+                $native_msg = $php_error['message'];
+            }
         }
 
         static $error_regexps;
