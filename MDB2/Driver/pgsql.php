@@ -62,6 +62,8 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
 
     public $identifier_quoting = array('start' => '"', 'end' => '"', 'escape' => '"');
 
+    protected $restore_error_handler = false;
+
     // }}}
     // {{{ constructor
 
@@ -126,9 +128,14 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
                 $native_msg = 'Database connection has been lost.';
                 $error_code = MDB2_ERROR_CONNECT_FAILED;
             }
-        } else {
-            $native_msg = @pg_last_error();
+        } elseif ($this->restore_error_handler) {
+            $php_error = error_get_last();
+            if ($php_error) {
+                $native_msg = $php_error['message'];
+            }
         }
+
+        $this->restoreErrorHandler();
 
         static $error_regexps;
         if (empty($error_regexps)) {
@@ -192,6 +199,28 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
             }
         }
         return array($error_code, null, $native_msg);
+    }
+
+    // }}}
+    // {{{ restoreErrorHandler()
+
+    protected function restoreErrorHandler()
+    {
+        if ($this->restore_error_handler) {
+            restore_error_handler();
+            $this->restore_error_handler = false;
+        }
+    }
+
+    // }}}
+    // {{{ useDefaultErrorHandler()
+
+    protected function useDefaultErrorHandler()
+    {
+        if (!$this->restore_error_handler) {
+            set_error_handler(null);
+            $this->restore_error_handler = true;
+        }
     }
 
     // }}}
@@ -451,6 +480,10 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
             $params[] = PGSQL_CONNECT_FORCE_NEW;
         }
 
+        // PostgreSQL connection errors will use standard PHP errors rather
+        // than libpq errors. Restore the built-in error handler so we can
+        // capture connection error messages.
+        $this->useDefaultErrorHandler();
         $connect_function = $persistent ? 'pg_pconnect' : 'pg_connect';
         $connection = @call_user_func_array($connect_function, $params);
         if (!$connection) {
@@ -462,6 +495,7 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
                 __FUNCTION__
             );
         }
+        $this->restoreErrorHandler();
 
         if (empty($this->dsn['disable_iso_date'])) {
             if (!@pg_query($connection, "SET SESSION DATESTYLE = 'ISO'")) {
