@@ -121,10 +121,23 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
 
         $native_msg = '';
         if (is_a($error, 'PgSql\Result') || is_resource($error)) {
-            $native_msg = @pg_result_error($error);
+            try {
+                $native_msg = pg_result_error($error);
+            } catch (Throwable $e) {
+                $native_msg = $e->getMessage();
+            }
         } elseif ($this->connection) {
-            $native_msg = @pg_last_error($this->connection);
-            if (!$native_msg && @pg_connection_status($this->connection) === PGSQL_CONNECTION_BAD) {
+            try {
+                $native_msg = pg_last_error($this->connection);
+            } catch (Throwable $e) {
+                $native_msg = $e->getMessage();
+            }
+            try {
+                $is_connection_bad = pg_connection_status($this->connection) === PGSQL_CONNECTION_BAD;
+            } catch (Throwable) {
+                $is_connection_bad = true;
+            }
+            if (!$native_msg && $is_connection_bad) {
                 $native_msg = 'Database connection has been lost.';
                 $error_code = MDB2_ERROR_CONNECT_FAILED;
             }
@@ -694,8 +707,9 @@ class MDB2_Driver_pgsql extends MDB2_Driver_Common
             }
 
             if (!$this->opened_persistent || $force) {
-                $ok = @pg_close($this->connection);
-                if (!$ok) {
+                try {
+                    pg_close($this->connection);
+                } catch (Throwable) {
                     return $this->raiseError(
                         MDB2_ERROR_DISCONNECT_FAILED,
                         null,
