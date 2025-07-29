@@ -8,34 +8,17 @@ pipeline {
             }
         }
 
-        stage('Lint Modified Files') {
-            when {
-                not {
-                    branch 'master'
-                }
-            }
+        stage('Check PHP Coding Style') {
             steps {
-                sh '''
-                    master_sha=$(git rev-parse origin/master)
-                    newest_sha=$(git rev-parse HEAD)
-                    ./vendor/bin/phpcs \
-                    --standard=SilverorangePEAR \
-                    --tab-width=4 \
-                    --encoding=utf-8 \
-                    --warning-severity=0 \
-                    --extensions=php \
-                    $(git diff --diff-filter=ACRM --name-only $master_sha...$newest_sha)
-                '''
+                sh 'composer run phpcs:ci'
             }
         }
 
-        stage('Lint Entire Project') {
-            when {
-                branch 'master'
-            }
+        stage('Check PHP Static Analysis') {
             steps {
-                sh './vendor/bin/phpcs'
+                sh 'composer run phpstan:ci'
             }
         }
+
     }
 }

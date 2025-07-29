@@ -1,56 +1,48 @@
 <?php
 
 /**
- * +----------------------------------------------------------------------+
- * | PHP version 5                                                        |
- * +----------------------------------------------------------------------+
- * | Copyright (c) 1998-2008 Manuel Lemos, Tomas V.V.Cox,                 |
- * | Stig. S. Bakken, Lukas Smith                                         |
- * | All rights reserved.                                                 |
- * +----------------------------------------------------------------------+
- * | MDB2 is a merge of PEAR DB and Metabases that provides a unified DB  |
- * | API as well as database abstraction for PHP applications.            |
- * | This LICENSE is in the BSD license style.                            |
- * |                                                                      |
- * | Redistribution and use in source and binary forms, with or without   |
- * | modification, are permitted provided that the following conditions   |
- * | are met:                                                             |
- * |                                                                      |
- * | Redistributions of source code must retain the above copyright       |
- * | notice, this list of conditions and the following disclaimer.        |
- * |                                                                      |
- * | Redistributions in binary form must reproduce the above copyright    |
- * | notice, this list of conditions and the following disclaimer in the  |
- * | documentation and/or other materials provided with the distribution. |
- * |                                                                      |
- * | Neither the name of Manuel Lemos, Tomas V.V.Cox, Stig. S. Bakken,    |
- * | Lukas Smith nor the names of his contributors may be used to endorse |
- * | or promote products derived from this software without specific prior|
- * | written permission.                                                  |
- * |                                                                      |
- * | THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS  |
- * | "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT    |
- * | LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS    |
- * | FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE      |
- * | REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,          |
- * | INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, |
- * | BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS|
- * |  OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED  |
- * | AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT          |
- * | LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY|
- * | WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE          |
- * | POSSIBILITY OF SUCH DAMAGE.                                          |
- * +----------------------------------------------------------------------+
- * | Authors: Paul Cooper <pgc@ucecom.com>                                |
- * |          Lorenzo Alberton <l.alberton@quipo.it>                      |
- * +----------------------------------------------------------------------+
+ * MDB2 is a merge of PEAR DB and Metabases that provides a unified DB
+ * API as well as database abstraction for PHP applications.
+ * This LICENSE is in the BSD license style.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ *
+ * Neither the name of Manuel Lemos, Tomas V.V.Cox, Stig. S. Bakken,
+ * Lukas Smith nor the names of his contributors may be used to endorse
+ * or promote products derived from this software without specific prior
+ * written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE
+ * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+ * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @copyright 1998-2008 Manuel Lemos, Tomas V.V.Cox, Stig. S. Bakken, Lukas Smith
+ * @copyright All rights reserved.
+ * @author Paul Cooper <pgc@ucecom.com>
  */
-
 /**
- * MDB2 PostGreSQL driver for the schema reverse engineering module
+ * MDB2 PostGreSQL driver for the schema reverse engineering module.
  *
  * @category Database
- * @package  MDB2
+ *
  * @author   Paul Cooper <pgc@ucecom.com>
  * @author   Lorenzo Alberton <l.alberton@quipo.it>
  * @license  http://opensource.org/licenses/bsd-license.php BSD-2-Clause
@@ -58,13 +50,12 @@
 // @codingStandardsIgnoreLine
 class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
 {
-    // {{{ getTableFieldDefinition()
-
     /**
-     * Get the structure of a field into an array
+     * Get the structure of a field into an array.
      *
      * @param string $table_name name of table that should be used in method
      * @param string $field_name name of field that should be used in method
+     *
      * @return mixed data array on success, a MDB2 error on failure
      */
     public function getTableFieldDefinition($table_name, $field_name)
@@ -79,7 +70,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
             return $result;
         }
 
-        list($schema, $table) = $this->splitTableSchema($table_name);
+        [$schema, $table] = $this->splitTableSchema($table_name);
 
         $query = "SELECT a.attname AS name,
                          t.typname AS type,
@@ -114,13 +105,13 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
                     FROM pg_attribute a,
                          pg_class c,
                          pg_type t
-                   WHERE c.relname = ".$db->quote($table, 'text')."
+                   WHERE c.relname = " . $db->quote($table, 'text') . '
                      AND a.atttypid = t.oid
                      AND c.oid = a.attrelid
                      AND NOT a.attisdropped
                      AND a.attnum > 0
-                     AND a.attname = ".$db->quote($field_name, 'text')."
-                ORDER BY a.attnum";
+                     AND a.attname = ' . $db->quote($field_name, 'text') . '
+                ORDER BY a.attnum';
         $column = $db->queryRow($query, null, MDB2_FETCHMODE_ASSOC);
         if (MDB2::isError($column)) {
             return $column;
@@ -141,7 +132,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
         if (MDB2::isError($mapped_datatype)) {
             return $mapped_datatype;
         }
-        list($types, $length, $unsigned, $fixed) = $mapped_datatype;
+        [$types, $length, $unsigned, $fixed] = $mapped_datatype;
         $notnull = false;
         if (!empty($column['attnotnull']) && $column['attnotnull'] == 't') {
             $notnull = true;
@@ -149,7 +140,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
         $default = null;
         if ($column['atthasdef'] === 't'
             && mb_strpos($column['default'], 'NULL') !== 0
-            && !preg_match("/nextval\('([^']+)'/", $column['default'])
+            && !preg_match("/nextval\\('([^']+)'/", $column['default'])
         ) {
             $pattern = '/^\'(.*)\'::[\w ]+$/i';
             $default = $column['default'];
@@ -157,14 +148,14 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
                 $default = '';
             } elseif (!empty($default) && preg_match($pattern, $default)) {
                 // remove data type cast
-                $default = preg_replace($pattern, '\\1', $default);
+                $default = preg_replace($pattern, '\1', $default);
             }
         }
         $autoincrement = false;
-        if (preg_match("/nextval\('([^']+)'/", $column['default'], $nextvals)) {
+        if (preg_match("/nextval\\('([^']+)'/", $column['default'], $nextvals)) {
             $autoincrement = true;
         }
-        $definition[0] = array('notnull' => $notnull, 'nativetype' => $column['type']);
+        $definition[0] = ['notnull' => $notnull, 'nativetype' => $column['type']];
         if (null !== $length) {
             $definition[0]['length'] = $length;
         }
@@ -188,17 +179,16 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
             $definition[$key]['type'] = $type;
             $definition[$key]['mdb2type'] = $type;
         }
+
         return $definition;
     }
 
-    // }}}
-    // {{{ getTableIndexDefinition()
-
     /**
-     * Get the structure of an index into an array
+     * Get the structure of an index into an array.
      *
      * @param string $table_name name of table that should be used in method
      * @param string $index_name name of index that should be used in method
+     *
      * @return mixed data array on success, a MDB2 error on failure
      */
     public function getTableIndexDefinition($table_name, $index_name)
@@ -208,12 +198,12 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
             return $db;
         }
 
-        list($schema, $table) = $this->splitTableSchema($table_name);
+        [$schema, $table] = $this->splitTableSchema($table_name);
 
         $query = 'SELECT relname, indkey FROM pg_index, pg_class';
-        $query.= ' WHERE pg_class.oid = pg_index.indexrelid';
-        $query.= " AND indisunique != 't' AND indisprimary != 't'";
-        $query.= ' AND pg_class.relname = %s';
+        $query .= ' WHERE pg_class.oid = pg_index.indexrelid';
+        $query .= " AND indisunique != 't' AND indisprimary != 't'";
+        $query .= ' AND pg_class.relname = %s';
         $index_name_mdb2 = $db->getIndexName($index_name);
         $row = $db->queryRow(sprintf($query, $db->quote($index_name_mdb2, 'text')), null, MDB2_FETCHMODE_ASSOC);
         if (MDB2::isError($row) || empty($row)) {
@@ -239,28 +229,27 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
         $db->loadModule('Manager', null, true);
         $columns = $db->manager->listTableFields($table_name);
 
-        $definition = array();
+        $definition = [];
 
         $index_column_numbers = explode(' ', $row['indkey']);
 
         $colpos = 1;
         foreach ($index_column_numbers as $number) {
-            $definition['fields'][$columns[($number - 1)]] = array(
+            $definition['fields'][$columns[$number - 1]] = [
                 'position' => $colpos++,
-                'sorting' => 'ascending',
-            );
+                'sorting'  => 'ascending',
+            ];
         }
+
         return $definition;
     }
 
-    // }}}
-    // {{{ getTableConstraintDefinition()
-
     /**
-     * Get the structure of a constraint into an array
+     * Get the structure of a constraint into an array.
      *
      * @param string $table_name      name of table that should be used in method
      * @param string $constraint_name name of constraint that should be used in method
+     *
      * @return mixed data array on success, a MDB2 error on failure
      */
     public function getTableConstraintDefinition($table_name, $constraint_name)
@@ -270,7 +259,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
             return $db;
         }
 
-        list($schema, $table) = $this->splitTableSchema($table_name);
+        [$schema, $table] = $this->splitTableSchema($table_name);
 
         $query = "SELECT c.oid,
                          c.conname AS constraint_name,
@@ -363,22 +352,22 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
 
         $row = array_change_key_case($row, CASE_LOWER);
 
-        $definition = array(
-            'primary' => (boolean)$row['primary'],
-            'unique'  => (boolean)$row['unique'],
-            'foreign' => (boolean)$row['foreign'],
-            'check'   => (boolean)$row['check'],
-            'fields'  => array(),
-            'references' => array(
+        $definition = [
+            'primary'    => (bool) $row['primary'],
+            'unique'     => (bool) $row['unique'],
+            'foreign'    => (bool) $row['foreign'],
+            'check'      => (bool) $row['check'],
+            'fields'     => [],
+            'references' => [
                 'table'  => $row['references_table'],
-                'fields' => array(),
-            ),
-            'deferrable' => (boolean)$row['deferrable'],
-            'initiallydeferred' => (boolean)$row['initiallydeferred'],
-            'onupdate' => $row['onupdate'],
-            'ondelete' => $row['ondelete'],
-            'match'    => $row['match'],
-        );
+                'fields' => [],
+            ],
+            'deferrable'        => (bool) $row['deferrable'],
+            'initiallydeferred' => (bool) $row['initiallydeferred'],
+            'onupdate'          => $row['onupdate'],
+            'ondelete'          => $row['ondelete'],
+            'match'             => $row['match'],
+        ];
 
         if ($uniqueIndex) {
             $db->loadModule('Manager', null, true);
@@ -386,11 +375,12 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
             $index_column_numbers = explode(' ', $row['indkey']);
             $colpos = 1;
             foreach ($index_column_numbers as $number) {
-                $definition['fields'][$columns[($number - 1)]] = array(
+                $definition['fields'][$columns[$number - 1]] = [
                     'position' => $colpos++,
                     'sorting'  => 'ascending',
-                );
+                ];
             }
+
             return $definition;
         }
 
@@ -406,10 +396,10 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
         }
         $colpos = 1;
         foreach ($fields as $field) {
-            $definition['fields'][$field] = array(
+            $definition['fields'][$field] = [
                 'position' => $colpos++,
-                'sorting' => 'ascending',
-            );
+                'sorting'  => 'ascending',
+            ];
         }
 
         if ($definition['foreign']) {
@@ -425,24 +415,22 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
             }
             $colpos = 1;
             foreach ($foreign_fields as $foreign_field) {
-                $definition['references']['fields'][$foreign_field] = array(
+                $definition['references']['fields'][$foreign_field] = [
                     'position' => $colpos++,
-                );
+                ];
             }
         }
 
         if ($definition['check']) {
-            $check_def = $db->queryOne("SELECT pg_get_constraintdef(" . $row['oid'] . ", 't')");
+            $check_def = $db->queryOne('SELECT pg_get_constraintdef(' . $row['oid'] . ", 't')");
             // ...
         }
+
         return $definition;
     }
 
-    // }}}
-    // {{{ getTriggerDefinition()
-
     /**
-     * Get the structure of a trigger into an array
+     * Get the structure of a trigger into an array.
      *
      * EXPERIMENTAL
      *
@@ -450,6 +438,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
      * at any time until labelled as non-experimental
      *
      * @param string $trigger name of trigger that should be used in method
+     *
      * @return mixed data array on success, a MDB2 error on failure
      *
      * @TODO: add support for plsql functions and functions with args
@@ -490,8 +479,8 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
                          pg_proc p
                    WHERE trg.tgrelid = tbl.oid
                      AND trg.tgfoid = p.oid
-                     AND trg.tgname = ". $db->quote($trigger, 'text');
-        $types = array(
+                     AND trg.tgname = " . $db->quote($trigger, 'text');
+        $types = [
             'trigger_name'    => 'text',
             'table_name'      => 'text',
             'trigger_body'    => 'text',
@@ -499,28 +488,26 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
             'trigger_event'   => 'text',
             'trigger_comment' => 'text',
             'trigger_enabled' => 'boolean',
-        );
+        ];
+
         return $db->queryRow($query, $types, MDB2_FETCHMODE_ASSOC);
     }
 
-    // }}}
-    // {{{ tableInfo()
-
     /**
-     * Returns information about a table or a result set
+     * Returns information about a table or a result set.
      *
      * NOTE: only supports 'table' and 'flags' if <var>$result</var>
      * is a table name.
      *
-     * @param object|string  $result  MDB2_result object from a query or a
-     *                                 string containing the name of a table.
-     *                                 While this also accepts a query result
-     *                                 resource identifier, this behavior is
-     *                                 deprecated.
-     * @param int            $mode    a valid tableInfo mode
+     * @param object|string $result MDB2_result object from a query or a
+     *                              string containing the name of a table.
+     *                              While this also accepts a query result
+     *                              resource identifier, this behavior is
+     *                              deprecated.
+     * @param int           $mode   a valid tableInfo mode
      *
-     * @return array  an associative array with the information requested.
-     *                 A MDB2_Error object on failure.
+     * @return array an associative array with the information requested.
+     *               A MDB2_Error object on failure.
      *
      * @see MDB2_Driver_Common::tableInfo()
      */
@@ -557,7 +544,7 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
         }
 
         $count = @pg_num_fields($resource);
-        $res   = array();
+        $res = [];
 
         if ($mode) {
             $res['num_fields'] = $count;
@@ -565,13 +552,13 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
 
         $db->loadModule('Datatype', null, true);
         for ($i = 0; $i < $count; $i++) {
-            $res[$i] = array(
-                'table' => function_exists('pg_field_table') ? @pg_field_table($resource, $i) : '',
-                'name'  => $case_func(@pg_field_name($resource, $i)),
-                'type'  => @pg_field_type($resource, $i),
+            $res[$i] = [
+                'table'  => function_exists('pg_field_table') ? @pg_field_table($resource, $i) : '',
+                'name'   => $case_func(@pg_field_name($resource, $i)),
+                'type'   => @pg_field_type($resource, $i),
                 'length' => @pg_field_size($resource, $i),
-                'flags' => '',
-            );
+                'flags'  => '',
+            ];
             $mdb2type_info = $db->datatype->mapNativeDatatype($res[$i]);
             if (MDB2::isError($mdb2type_info)) {
                 return $mdb2type_info;
@@ -587,8 +574,4 @@ class MDB2_Driver_Reverse_pgsql extends MDB2_Driver_Reverse_Common
 
         return $res;
     }
-
-    // }}}
 }
-
-?>
