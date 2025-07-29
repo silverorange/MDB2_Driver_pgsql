@@ -42,26 +42,24 @@
  * | POSSIBILITY OF SUCH DAMAGE.                                          |
  * +----------------------------------------------------------------------+
  * | Author: Paul Cooper <pgc@ucecom.com>                                 |
- * +----------------------------------------------------------------------+
+ * +----------------------------------------------------------------------+.
  */
 
 /**
- * MDB2 PostGreSQL statement driver
+ * MDB2 PostGreSQL statement driver.
  *
  * @category Database
- * @package  MDB2
+ *
  * @author   Paul Cooper <pgc@ucecom.com>
  * @license  http://opensource.org/licenses/bsd-license.php BSD-2-Clause
  */
 // @codingStandardsIgnoreLine
 class MDB2_Statement_pgsql extends MDB2_Statement_Common
 {
-    // {{{ executeInternal()
-
     /**
      * Execute a prepared query statement helper method.
      *
-     * @param mixed $result_class string which specifies which result class to use
+     * @param mixed $result_class      string which specifies which result class to use
      * @param mixed $result_wrap_class string which specifies which class to wrap results in
      *
      * @return mixed MDB2_Result or integer (affected rows) on success,
@@ -73,10 +71,9 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
             return parent::executeInternal($result_class, $result_wrap_class);
         }
         $this->db->last_query = $this->query;
-        $this->db->debug($this->query, 'execute', array('is_manip' => $this->is_manip, 'when' => 'pre', 'parameters' => $this->values));
+        $this->db->debug($this->query, 'execute', ['is_manip' => $this->is_manip, 'when' => 'pre', 'parameters' => $this->values]);
         if ($this->db->getOption('disable_query')) {
-            $result = $this->is_manip ? 0 : null;
-            return $result;
+            return $this->is_manip ? 0 : null;
         }
 
         $connection = $this->db->getConnection();
@@ -85,10 +82,10 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
         }
 
         $query = false;
-        $parameters = array();
+        $parameters = [];
         // todo: disabled until pgexecuteInternal() bytea issues are cleared up
         if (true || !function_exists('pgexecuteInternal')) {
-            $query = 'EXECUTE '.$this->statement;
+            $query = 'EXECUTE ' . $this->statement;
         }
         if (!empty($this->positions)) {
             foreach ($this->positions as $parameter) {
@@ -114,7 +111,7 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
                     if (is_resource($value)) {
                         $data = '';
                         while (!@feof($value)) {
-                            $data.= @fread($value, $this->db->options['lob_buffer_length']);
+                            $data .= @fread($value, $this->db->options['lob_buffer_length']);
                         }
                         if ($close) {
                             @fclose($value);
@@ -129,21 +126,20 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
                 $parameters[] = $quoted;
             }
             if ($query) {
-                $query.= ' ('.implode(', ', $parameters).')';
+                $query .= ' (' . implode(', ', $parameters) . ')';
             }
         }
 
         if (!$query) {
             $result = @pgexecuteInternal($connection, $this->statement, $parameters);
             if (!$result) {
-                $err = $this->db->raiseError(
+                return $this->db->raiseError(
                     null,
                     null,
                     null,
                     'Unable to execute statement',
                     __FUNCTION__
                 );
-                return $err;
             }
         } else {
             $result = $this->db->doQuery($query, $this->is_manip, $connection);
@@ -153,8 +149,7 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
         }
 
         if ($this->is_manip) {
-            $affected_rows = $this->db->affectedRows($connection, $result);
-            return $affected_rows;
+            return $this->db->affectedRows($connection, $result);
         }
 
         $result = $this->db->wrapResult(
@@ -166,12 +161,10 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
             $this->offset
         );
 
-        $this->db->debug($this->query, 'execute', array('is_manip' => $this->is_manip, 'when' => 'post', 'result' => $result));
+        $this->db->debug($this->query, 'execute', ['is_manip' => $this->is_manip, 'when' => 'post', 'result' => $result]);
+
         return $result;
     }
-
-    // }}}
-    // {{{ free()
 
     /**
      * Release resources allocated for the specified prepared query.
@@ -196,21 +189,20 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
             if (MDB2::isError($connection)) {
                 return $connection;
             }
-            $query = 'DEALLOCATE PREPARE '.$this->statement;
+            $query = 'DEALLOCATE PREPARE ' . $this->statement;
             $result = $this->db->doQuery($query, true, $connection);
         }
 
         parent::free();
+
         return $result;
     }
 
-    // }}}
-    // {{{ dropTable()
-
     /**
-     * drop an existing table
+     * drop an existing table.
      *
      * @param string $name name of the table that should be dropped
+     *
      * @return mixed MDB2_OK on success, a MDB2 error on failure
      */
     public function dropTable($name)
@@ -221,16 +213,12 @@ class MDB2_Statement_pgsql extends MDB2_Statement_Common
         }
 
         $name = $db->quoteIdentifier($name, true);
-        $result = $db->exec("DROP TABLE $name");
+        $result = $db->exec("DROP TABLE {$name}");
 
         if (MDB2::isError($result)) {
-            $result = $db->exec("DROP TABLE $name CASCADE");
+            $result = $db->exec("DROP TABLE {$name} CASCADE");
         }
 
         return $result;
     }
-
-    // }}}
 }
-
-?>

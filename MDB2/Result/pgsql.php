@@ -42,27 +42,26 @@
  * | POSSIBILITY OF SUCH DAMAGE.                                          |
  * +----------------------------------------------------------------------+
  * | Author: Paul Cooper <pgc@ucecom.com>                                 |
- * +----------------------------------------------------------------------+
+ * +----------------------------------------------------------------------+.
  */
 
 /**
- * MDB2 PostGreSQL result driver
+ * MDB2 PostGreSQL result driver.
  *
  * @category Database
- * @package  MDB2
+ *
  * @author   Paul Cooper <pgc@ucecom.com>
  * @license  http://opensource.org/licenses/bsd-license.php BSD-2-Clause
  */
 // @codingStandardsIgnoreLine
 class MDB2_Result_pgsql extends MDB2_Result_Common
 {
-    // {{{ fetchRow()
-
     /**
      * Fetch a row and insert the data into an existing array.
      *
-     * @param int       $fetchmode  how the array data should be indexed
-     * @param int    $rownum    number of the row where the data can be found
+     * @param int $fetchmode how the array data should be indexed
+     * @param int $rownum    number of the row where the data can be found
+     *
      * @return int data array on success, a MDB2 error on failure
      */
     public function fetchRow($fetchmode = MDB2_FETCHMODE_DEFAULT, $rownum = null)
@@ -97,8 +96,10 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
                     'resultset has already been freed',
                     __FUNCTION__
                 );
+
                 return $err;
             }
+
             return null;
         }
         $mode = $this->db->options['portability'] & MDB2_PORTABILITY_EMPTY_TO_NULL;
@@ -134,23 +135,23 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
             }
         }
         ++$this->rownum;
+
         return $row;
     }
-
-    // }}}
-    // {{{ getColumnNames()
 
     /**
      * Retrieve the names of columns returned by the DBMS in a query result.
      *
-     * @return  mixed   Array variable that holds the names of columns as keys
-     *                  or an MDB2 error on failure.
-     *                  Some DBMS may not return any columns when the result set
-     *                  does not contain any rows.
+     * @param mixed $flip
+     *
+     * @return mixed Array variable that holds the names of columns as keys
+     *               or an MDB2 error on failure.
+     *               Some DBMS may not return any columns when the result set
+     *               does not contain any rows.
      */
     public function getColumnNames($flip = false)
     {
-        $columns = array();
+        $columns = [];
         $numcols = $this->numCols();
         if (MDB2::isError($numcols)) {
             return $numcols;
@@ -162,17 +163,15 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
         if ($this->db->options['portability'] & MDB2_PORTABILITY_FIX_CASE) {
             $columns = array_change_key_case($columns, $this->db->options['field_case']);
         }
+
         return $columns;
     }
-
-    // }}}
-    // {{{ numCols()
 
     /**
      * Count the number of columns returned by the DBMS in a query result.
      *
      * @return mixed integer value with the number of columns, a MDB2 error
-     *                       on failure
+     *               on failure
      */
     public function numCols()
     {
@@ -190,6 +189,7 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
             if (null === $this->result) {
                 return count($this->types);
             }
+
             return $this->db->raiseError(
                 null,
                 null,
@@ -198,14 +198,12 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
                 __FUNCTION__
             );
         }
+
         return $cols;
     }
 
-    // }}}
-    // {{{ nextResult()
-
     /**
-     * Move the internal result pointer to the next available result
+     * Move the internal result pointer to the next available result.
      *
      * @return true on success, false if there is no more result set or an error object on failure
      */
@@ -219,16 +217,14 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
         if (!($this->result = @pg_get_result($connection))) {
             return false;
         }
+
         return MDB2_OK;
     }
-
-    // }}}
-    // {{{ free()
 
     /**
      * Free the internal resources associated with result.
      *
-     * @return boolean true on success, false if result is invalid
+     * @return bool true on success, false if result is invalid
      */
     public function free()
     {
@@ -247,10 +243,7 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
             }
         }
         $this->result = false;
+
         return MDB2_OK;
     }
-
-    // }}}
 }
-
-?>
