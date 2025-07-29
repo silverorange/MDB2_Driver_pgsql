@@ -1,29 +1,9 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Constant MDB2_ERROR_INVALID not found\\.$#"
-			count: 1
-			path: MDB2/BufferedResult/pgsql.php
-
-		-
-			message: "#^Constant MDB2_ERROR_NEED_MORE_DATA not found\\.$#"
-			count: 2
-			path: MDB2/BufferedResult/pgsql.php
-
-		-
-			message: "#^Constant MDB2_OK not found\\.$#"
-			count: 2
-			path: MDB2/BufferedResult/pgsql.php
-
-		-
 			message: "#^Method MDB2_Driver_Datatype_pgsql\\:\\:getTypeDeclaration\\(\\) should return string but return statement is missing\\.$#"
 			count: 1
 			path: MDB2/Driver/Datatype/pgsql.php
-
-		-
-			message: "#^Constant MDB2_OK not found\\.$#"
-			count: 9
-			path: MDB2/Driver/Manager/pgsql.php
 
 		-
 			message: "#^Variable \\$change_name might not be defined\\.$#"
@@ -31,57 +11,12 @@ parameters:
 			path: MDB2/Driver/Manager/pgsql.php
 
 		-
-			message: "#^Constant MDB2_OK not found\\.$#"
-			count: 1
-			path: MDB2/Driver/Native/pgsql.php
-
-		-
-			message: "#^Constant MDB2_ERROR_NEED_MORE_DATA not found\\.$#"
-			count: 1
-			path: MDB2/Driver/Reverse/pgsql.php
-
-		-
-			message: "#^Constant MDB2_ERROR_INVALID not found\\.$#"
-			count: 4
-			path: MDB2/Driver/pgsql.php
-
-		-
-			message: "#^Constant MDB2_OK not found\\.$#"
-			count: 7
-			path: MDB2/Driver/pgsql.php
-
-		-
-			message: "#^Result of method MDB2_Driver_Common\\:\\:debug\\(\\) \\(void\\) is used\\.$#"
-			count: 2
-			path: MDB2/Driver/pgsql.php
-
-		-
 			message: "#^Variable \\$table might not be defined\\.$#"
 			count: 1
 			path: MDB2/Driver/pgsql.php
 
 		-
-			message: "#^Constant MDB2_ERROR_NEED_MORE_DATA not found\\.$#"
-			count: 2
-			path: MDB2/Result/pgsql.php
-
-		-
-			message: "#^Constant MDB2_OK not found\\.$#"
-			count: 2
-			path: MDB2/Result/pgsql.php
-
-		-
-			message: "#^Access to an undefined property MDB2_Statement_pgsql\\:\\:\\$positions\\.$#"
-			count: 1
-			path: MDB2/Statement/pgsql.php
-
-		-
 			message: "#^Call to an undefined method MDB2_Statement_pgsql\\:\\:getDBInstance\\(\\)\\.$#"
-			count: 1
-			path: MDB2/Statement/pgsql.php
-
-		-
-			message: "#^Constant MDB2_OK not found\\.$#"
 			count: 1
 			path: MDB2/Statement/pgsql.php
 

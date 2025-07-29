@@ -21,7 +21,7 @@
     "ext-mbstring": "*",
     "ext-pgsql": "*",
     "pear/pear-core-minimal": "^1.9.0",
-    "silverorange/mdb2": "^3.1.0"
+    "silverorange/mdb2": "^3.1.2"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.64.0",
