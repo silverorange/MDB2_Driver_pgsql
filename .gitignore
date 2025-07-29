@@ -6,14 +6,8 @@ vendor/
 # misc
 .DS_Store
 .env
-<<<<<<< Updated upstream
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-=======
 /.idea
 .php-cs-fixer.cache
->>>>>>> Stashed changes
 *.swp
 
 # dependency lock file
