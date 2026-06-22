@@ -56,7 +56,7 @@ class MDB2_Result_pgsql extends MDB2_Result_Common
      * @param int $fetchmode how the array data should be indexed
      * @param int $rownum    number of the row where the data can be found
      *
-     * @return int data array on success, a MDB2 error on failure
+     * @return ($fetchmode is MDB2_FETCHMODE_OBJECT ? stdClass : array)|MDB2_Error data array on success, a MDB2 error on failure
      */
     public function fetchRow($fetchmode = MDB2_FETCHMODE_DEFAULT, $rownum = null)
     {
